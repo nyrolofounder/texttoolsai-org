@@ -79,12 +79,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <head>
         <StructuredData />
       </head>
-      <body className="min-h-screen bg-[#030712] text-white selection:bg-cyan-500/30 selection:text-white flex flex-col font-sans">
+      <body className="min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-indigo-500/20 selection:text-indigo-900 flex flex-col font-sans">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

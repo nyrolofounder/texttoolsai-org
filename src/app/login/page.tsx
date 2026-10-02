@@ -5,14 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { 
-  ArrowRight, 
-  Lock, 
   Mail, 
-  Eye, 
-  EyeOff, 
+  Lock, 
+  ArrowRight, 
   Sparkles, 
   ShieldCheck, 
   AlertCircle,
+  Eye,
+  EyeOff,
   Zap,
   ArrowLeft
 } from "lucide-react";
@@ -21,51 +21,36 @@ import NeonBackgroundOrbs from "@/components/NeonBackgroundOrbs";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signInWithGoogle, signInWithEmail, enterDemoMode } = useAuth();
+  const { signInWithEmail, signInWithGoogle, enterDemoMode } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      setErrorMessage("Please enter both email and password.");
-      return;
-    }
-
     setIsLoading(true);
-    setErrorMessage("");
+    setErrorMessage(null);
 
-    try {
-      const { error } = await signInWithEmail(email, password);
-      if (error) {
-        setErrorMessage(error.message || "Failed to sign in.");
-        setIsLoading(false);
-      } else {
-        router.push("/dashboard");
-      }
-    } catch {
-      setErrorMessage("An unexpected error occurred. Please try again.");
+    const { error } = await signInWithEmail(email, password);
+
+    if (error) {
+      setErrorMessage(error.message);
       setIsLoading(false);
+    } else {
+      router.push("/dashboard");
     }
   };
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
-    setErrorMessage("");
-    try {
-      const { error } = await signInWithGoogle();
-      if (error) {
-        setErrorMessage(error.message || "Google authentication failed.");
-        setIsLoading(false);
-      } else {
-        router.push("/dashboard");
-      }
-    } catch {
-      setErrorMessage("Could not connect to Google sign in.");
+    setErrorMessage(null);
+
+    const { error } = await signInWithGoogle();
+    if (error) {
+      setErrorMessage(error.message);
       setIsLoading(false);
     }
   };
@@ -76,15 +61,15 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#030712] text-white selection:bg-cyan-500/30 selection:text-white relative flex items-center justify-center p-4 sm:p-6 overflow-hidden">
-      {/* 3D Volumetric Background Canvas */}
+    <main className="min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-indigo-500/20 selection:text-indigo-900 relative flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+      {/* 3D Radiant Mesh Background Canvas */}
       <NeonBackgroundOrbs />
 
       {/* Top Left Return Link */}
       <div className="absolute top-4 sm:top-6 left-4 sm:left-6 z-20">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-medium text-white/80 hover:text-white backdrop-blur-xl transition-all shadow-sm active:scale-95 min-h-[38px]"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/90 hover:bg-white border border-slate-200/90 text-xs font-medium text-slate-700 hover:text-slate-900 backdrop-blur-xl transition-all shadow-xs active:scale-95 min-h-[38px]"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to texttoolsai.org</span>
@@ -96,25 +81,25 @@ export default function LoginPage() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ type: "spring", stiffness: 400, damping: 26 }}
         style={{
-          boxShadow: "0 35px 90px -25px rgba(0, 0, 0, 0.95), 0 0 60px -20px rgba(76, 29, 149, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.16)",
+          boxShadow: "0 25px 70px -15px rgba(99, 102, 241, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.9)",
         }}
-        className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0b0f19]/80 p-6 sm:p-10 backdrop-blur-xl relative z-10 my-12"
+        className="w-full max-w-md rounded-3xl border border-slate-200/90 bg-white/95 p-6 sm:p-10 backdrop-blur-xl relative z-10 my-12 shadow-xl"
       >
         {/* Top Specular Edge Beam */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 via-violet-400/40 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-indigo-500/40 via-violet-500/40 to-transparent" />
 
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/[0.06] border border-white/15 shadow-[0_0_20px_rgba(0,242,254,0.2)] mb-4">
-            <span className="font-mono font-bold text-white text-base">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200/80 shadow-xs mb-4">
+            <span className="font-mono font-bold text-indigo-700 text-base">
               TT
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight sm:tracking-tighter">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight sm:tracking-tighter">
             Welcome Back
           </h1>
-          <p className="text-xs sm:text-sm text-white/60 mt-1.5">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1.5">
             Access your saved transformations & high-velocity studio.
           </p>
         </div>
@@ -124,9 +109,9 @@ export default function LoginPage() {
           <motion.div
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-5 p-3 rounded-xl bg-rose-950/40 border border-rose-800/50 flex items-center gap-2.5 text-xs text-rose-300"
+            className="mb-5 p-3 rounded-xl bg-rose-50 border border-rose-200 flex items-center gap-2.5 text-xs text-rose-700"
           >
-            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{errorMessage}</span>
           </motion.div>
         )}
@@ -139,7 +124,7 @@ export default function LoginPage() {
           transition={{ type: "spring", stiffness: 450, damping: 20 }}
           onClick={handleGoogleSignIn}
           disabled={isLoading}
-          className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl font-semibold text-xs sm:text-sm text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-white/20 backdrop-blur-xl transition-all shadow-sm"
+          className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl font-semibold text-xs sm:text-sm text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 backdrop-blur-xl transition-all shadow-xs cursor-pointer"
         >
           {/* Official Google SVG */}
           <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -165,21 +150,21 @@ export default function LoginPage() {
 
         {/* Divider */}
         <div className="flex items-center my-6">
-          <div className="flex-1 border-t border-white/[0.08]" />
-          <span className="px-3 text-[11px] font-mono uppercase tracking-wider text-neutral-500">
+          <div className="flex-1 border-t border-slate-200" />
+          <span className="px-3 text-[11px] font-mono uppercase tracking-wider text-slate-400">
             or with email
           </span>
-          <div className="flex-1 border-t border-white/[0.08]" />
+          <div className="flex-1 border-t border-slate-200" />
         </div>
 
         {/* Email & Password Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-neutral-300 mb-1.5">
+            <label className="block text-xs font-medium text-slate-700 mb-1.5">
               Email Address
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-neutral-500">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <Mail className="w-4 h-4" />
               </div>
               <input
@@ -188,25 +173,25 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@company.com"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#04040d]/90 border border-white/10 hover:border-white/20 focus:border-cyan-400 focus:outline-none text-xs sm:text-sm text-white placeholder-neutral-600 transition-colors shadow-inner"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white focus:outline-none text-xs sm:text-sm text-slate-900 placeholder-slate-400 transition-colors shadow-inner"
               />
             </div>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-medium text-neutral-300">
+              <label className="block text-xs font-medium text-slate-700">
                 Password
               </label>
               <a
                 href="mailto:support@texttoolsai.org?subject=Password%20Reset%20Request"
-                className="text-[11px] text-cyan-400 hover:text-cyan-300 transition-colors"
+                className="text-[11px] text-indigo-600 hover:text-indigo-700 transition-colors"
               >
                 Forgot password?
               </a>
             </div>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-neutral-500">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <Lock className="w-4 h-4" />
               </div>
               <input
@@ -215,12 +200,12 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full pl-10 pr-10 py-3 rounded-xl bg-[#04040d]/90 border border-white/10 hover:border-white/20 focus:border-cyan-400 focus:outline-none text-xs sm:text-sm text-white placeholder-neutral-600 transition-colors shadow-inner"
+                className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white focus:outline-none text-xs sm:text-sm text-slate-900 placeholder-slate-400 transition-colors shadow-inner"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-neutral-500 hover:text-neutral-300"
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -234,39 +219,36 @@ export default function LoginPage() {
             whileTap={{ scale: 0.985 }}
             transition={{ type: "spring", stiffness: 450, damping: 20 }}
             disabled={isLoading}
-            className="w-full relative group inline-flex items-center justify-center p-[1px] rounded-xl overflow-hidden font-bold text-sm tracking-tight transition-all active:scale-95 shadow-[0_0_25px_rgba(0,242,254,0.3)] hover:shadow-[0_0_35px_rgba(0,242,254,0.5)] mt-2"
+            className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-md shadow-indigo-500/30 transition-all cursor-pointer mt-2"
           >
-            <span className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500 group-hover:opacity-100 opacity-90 transition-opacity" />
-            <span className="relative w-full py-3 px-4 rounded-[11px] bg-[#09090b]/90 group-hover:bg-[#09090b]/75 text-white flex items-center justify-center gap-2 backdrop-blur-xl transition-all">
-              <span>{isLoading ? "Signing In..." : "Sign In to Studio"}</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </span>
+            <span>{isLoading ? "Signing In..." : "Sign In to Studio"}</span>
+            <ArrowRight className="w-4 h-4" />
           </motion.button>
         </form>
 
         {/* Demo Mode Quick Access Button */}
-        <div className="mt-5 pt-4 border-t border-white/[0.08] text-center">
+        <div className="mt-5 pt-4 border-t border-slate-100 text-center">
           <button
             type="button"
             onClick={handleDemoAccess}
-            className="w-full py-2.5 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-cyan-300 text-xs font-mono font-medium flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95"
+            className="w-full py-2.5 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/80 text-indigo-700 text-xs font-mono font-medium flex items-center justify-center gap-2 transition-all shadow-xs active:scale-95 cursor-pointer"
           >
-            <Zap className="w-3.5 h-3.5" />
+            <Zap className="w-3.5 h-3.5 text-indigo-600" />
             <span>Instant Demo Preview (Explore Dashboard)</span>
           </button>
         </div>
 
         {/* Footer Link */}
-        <p className="text-center text-xs text-white/60 mt-6">
+        <p className="text-center text-xs text-slate-500 mt-6">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-cyan-300 hover:text-cyan-200 font-semibold underline underline-offset-4">
+          <Link href="/signup" className="text-indigo-600 hover:text-indigo-700 font-semibold underline underline-offset-4">
             Sign up free
           </Link>
         </p>
 
         {/* Privacy Note */}
-        <div className="mt-6 flex items-center justify-center gap-1.5 text-[11px] font-mono text-neutral-500 text-center">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+        <div className="mt-6 flex items-center justify-center gap-1.5 text-[11px] font-mono text-slate-400 text-center">
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
           <span>Zero data retention • Encrypted tokens</span>
         </div>
       </motion.div>

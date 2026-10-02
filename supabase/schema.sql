@@ -66,6 +66,22 @@ create table if not exists public.subscriptions (
 comment on table public.subscriptions is 'Stores payment credentials and active billing periods from Razorpay webhook events.';
 
 -- ==============================================================================
+-- TABLE: api_keys
+-- Stores developer API secret keys for programmatic inference via /api/v1/*
+-- ==============================================================================
+create table if not exists public.api_keys (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade not null,
+  key text unique not null,
+  name text default 'Default Secret Key',
+  status text not null default 'active' check (status in ('active', 'revoked')),
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  last_used_at timestamp with time zone
+);
+
+comment on table public.api_keys is 'Stores developer API secret keys for programmatic inference via /api/v1/*';
+
+-- ==============================================================================
 -- INDEXES FOR MAXIMUM QUERY PERFORMANCE
 -- ==============================================================================
 create index if not exists idx_profiles_plan on public.profiles (plan);
@@ -75,6 +91,8 @@ create index if not exists idx_generations_tool_id on public.generations (tool_i
 create index if not exists idx_generations_user_starred on public.generations (user_id, starred);
 create index if not exists idx_subscriptions_user_id on public.subscriptions (user_id);
 create index if not exists idx_subscriptions_status on public.subscriptions (status);
+create index if not exists idx_api_keys_user_id on public.api_keys (user_id);
+create index if not exists idx_api_keys_key on public.api_keys (key);
 
 -- ==============================================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
@@ -83,6 +101,28 @@ create index if not exists idx_subscriptions_status on public.subscriptions (sta
 alter table public.profiles enable row level security;
 alter table public.generations enable row level security;
 alter table public.subscriptions enable row level security;
+alter table public.api_keys enable row level security;
+
+-- API KEYS POLICIES
+drop policy if exists "Users can read own api keys" on public.api_keys;
+create policy "Users can read own api keys"
+  on public.api_keys for select
+  using (auth.uid() = user_id);
+
+drop policy if exists "Users can insert own api keys" on public.api_keys;
+create policy "Users can insert own api keys"
+  on public.api_keys for insert
+  with check (auth.uid() = user_id);
+
+drop policy if exists "Users can update own api keys" on public.api_keys;
+create policy "Users can update own api keys"
+  on public.api_keys for update
+  using (auth.uid() = user_id);
+
+drop policy if exists "Users can delete own api keys" on public.api_keys;
+create policy "Users can delete own api keys"
+  on public.api_keys for delete
+  using (auth.uid() = user_id);
 
 -- PROFILES POLICIES
 drop policy if exists "Users can read own profile" on public.profiles;

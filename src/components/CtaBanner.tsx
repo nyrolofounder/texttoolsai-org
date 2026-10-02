@@ -5,13 +5,13 @@ import { ArrowRight, Sparkles, Shield, Zap, Cpu } from "lucide-react";
 
 export default function CtaBanner() {
   return (
-    <section className="py-20 md:py-32 relative border-t border-white/[0.08] bg-gradient-to-b from-[#030712] via-[#0d1224] to-[#030712] overflow-hidden">
-      {/* 3D Multi-Layer Volumetric Ambient Lighting Vortex */}
+    <section className="py-20 md:py-32 relative border-t border-slate-200/80 bg-gradient-to-b from-[#f8fafc] via-indigo-50/40 to-[#f8fafc] overflow-hidden">
+      {/* 3D Multi-Layer Volumetric Ambient Lighting */}
       <div 
         aria-hidden="true" 
-        className="pointer-events-none absolute inset-0 flex items-center justify-center -z-10 mix-blend-screen"
+        className="pointer-events-none absolute inset-0 flex items-center justify-center -z-10"
       >
-        <div className="w-[900px] h-[450px] bg-gradient-to-r from-[#4c1d95]/25 via-[#00f2fe]/15 to-[#db2777]/20 blur-[160px] rounded-full animate-volumetric-2" />
+        <div className="w-[850px] h-[400px] bg-gradient-to-r from-indigo-200/40 via-violet-200/30 to-pink-200/30 blur-[140px] rounded-full" />
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
@@ -21,16 +21,16 @@ export default function CtaBanner() {
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 350, damping: 25 }}
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-6 shadow-[0_0_15px_rgba(0,242,254,0.25)]">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-700 text-xs font-mono uppercase tracking-wider mb-6 shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
             <span>Zero Friction • Immediate Access</span>
           </div>
 
-          <h2 className="text-fluid-hero text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
+          <h2 className="text-fluid-hero text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
             Supercharge Your Writing Workflow Today.
           </h2>
 
-          <p className="mt-4 sm:mt-5 text-sm sm:text-base md:text-lg text-neutral-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-4 sm:mt-5 text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
             No credit cards, no signups, no bloat. Experience high-velocity neural text rewriting directly in your browser.
           </p>
 
@@ -40,10 +40,8 @@ export default function CtaBanner() {
               whileHover={{ scale: 1.03, y: -1 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 450, damping: 20 }}
-              className="w-full sm:w-auto min-h-[48px] relative group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 sm:px-9 sm:py-4 text-sm sm:text-base font-bold text-white rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_15px_45px_-10px_rgba(76,29,149,0.7),0_0_55px_rgba(0,242,254,0.45)] hover:shadow-[0_20px_55px_-10px_rgba(0,242,254,0.7),0_0_65px_rgba(219,39,119,0.5)] transition-all"
+              className="w-full sm:w-auto min-h-[48px] relative group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 sm:px-9 sm:py-4 text-sm sm:text-base font-bold text-white rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-700 hover:to-violet-700 shadow-[0_15px_35px_-5px_rgba(99,102,241,0.4)] transition-all cursor-pointer"
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-[#00f2fe] via-[#7928ca] to-[#db2777]" />
-              <span className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
               <span className="relative z-10 flex items-center gap-2">
                 <span>Launch 3D Studio Free</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -51,30 +49,30 @@ export default function CtaBanner() {
             </motion.a>
 
             <motion.a
-              href="#pricing"
+              href="/#pricing"
               whileHover={{ scale: 1.02, y: -1 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 450, damping: 20 }}
-              className="w-full sm:w-auto min-h-[48px] inline-flex items-center justify-center gap-2 px-7 py-3.5 sm:py-4 text-xs sm:text-sm font-semibold text-neutral-200 bg-[#0b0f19]/80 hover:bg-[#0f1524]/90 border border-white/10 hover:border-white/20 rounded-xl sm:rounded-2xl backdrop-blur-2xl transition-all shadow-sm"
+              className="w-full sm:w-auto min-h-[48px] inline-flex items-center justify-center gap-2 px-7 py-3.5 sm:py-4 text-xs sm:text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200/90 rounded-xl sm:rounded-2xl backdrop-blur-xl transition-all shadow-sm cursor-pointer"
             >
-              <Cpu className="w-4 h-4 text-cyan-400" />
+              <Cpu className="w-4 h-4 text-indigo-600" />
               <span>Compare Pro Plans</span>
             </motion.a>
           </div>
 
           {/* Micro guarantees */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-300 font-mono">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500 font-mono">
             <span className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-[#ffb703]" />
+              <Zap className="w-4 h-4 text-amber-500" />
               180ms p95 Latency
             </span>
-            <span className="text-neutral-700">•</span>
+            <span className="text-slate-300">•</span>
             <span className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#00f5a0]" />
+              <Shield className="w-4 h-4 text-emerald-600" />
               Zero-Retention Privacy
             </span>
-            <span className="text-neutral-700">•</span>
-            <span className="text-cyan-300 font-semibold">99.4% Detection Bypass</span>
+            <span className="text-slate-300">•</span>
+            <span className="text-indigo-600 font-bold">99.4% Detection Bypass</span>
           </div>
         </motion.div>
       </div>

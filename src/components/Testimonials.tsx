@@ -74,17 +74,17 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="py-20 md:py-32 relative border-t border-white/[0.08] bg-[#030712]">
+    <section className="py-20 md:py-32 relative border-t border-slate-200/80 bg-[#f8fafc]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[#00f5a0] text-xs font-mono uppercase tracking-wider mb-4 shadow-[0_0_15px_rgba(0,245,160,0.2)]">
-            <Sparkles className="w-3.5 h-3.5 text-[#00f5a0]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-mono uppercase tracking-wider mb-4 shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
             <span>Wall of Proof</span>
           </div>
-          <h2 className="text-fluid-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-fluid-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight">
             Loved by 45,000+ Creators, Writers & Builders
           </h2>
-          <p className="mt-4 text-sm sm:text-base md:text-lg text-neutral-300">
+          <p className="mt-4 text-sm sm:text-base md:text-lg text-slate-600">
             See how high-output teams use our 5 core text tools to publish better content, bypass false AI flags, and reclaim their workdays.
           </p>
         </div>
@@ -100,43 +100,43 @@ export default function Testimonials() {
             >
               <div 
                 style={{
-                  boxShadow: "0 25px 60px -20px rgba(0, 0, 0, 0.9), inset 0 1px 0 0 rgba(255, 255, 255, 0.12)",
+                  boxShadow: "0 15px 35px -10px rgba(0, 0, 0, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.9)",
                 }}
-                className="p-5 sm:p-7 rounded-2xl sm:rounded-3xl bg-[#0b0f19]/80 border border-white/10 hover:border-white/20 transition-all flex flex-col justify-between h-full backdrop-blur-2xl shadow-xl"
+                className="p-5 sm:p-7 rounded-2xl sm:rounded-3xl bg-white/95 border border-slate-200/90 hover:border-indigo-300 transition-all flex flex-col justify-between h-full backdrop-blur-2xl shadow-md"
               >
                 <div>
                   {/* Rating & Tool Pill */}
                   <div className="flex items-center justify-between mb-5">
-                    <div className="flex items-center gap-1 text-[#ffb703]">
+                    <div className="flex items-center gap-1 text-amber-400">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-[#ffb703] drop-shadow-[0_0_6px_rgba(255,183,3,0.4)]" />
+                        <Star key={i} className="w-4 h-4 fill-amber-400 drop-shadow-xs" />
                       ))}
                     </div>
-                    <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/10 text-neutral-300">
+                    <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600 font-medium">
                       {t.tool}
                     </span>
                   </div>
 
                   {/* Quote */}
-                  <p className="text-sm text-neutral-200 leading-relaxed font-sans mb-6">
+                  <p className="text-sm text-slate-700 leading-relaxed font-sans mb-6">
                     &ldquo;{t.quote}&rdquo;
                   </p>
                 </div>
 
                 {/* Author Info & Metric */}
-                <div className="pt-4 border-t border-white/[0.08] flex items-center justify-between">
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${t.avatarGradient} flex items-center justify-center text-xs font-bold text-white shadow-md`}>
+                    <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${t.avatarGradient} flex items-center justify-center text-xs font-bold text-white shadow-xs`}>
                       {t.avatar}
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-white tracking-tight">{t.name}</div>
-                      <div className="text-[11px] text-neutral-400">{t.role}</div>
+                      <div className="text-xs font-bold text-slate-900 tracking-tight">{t.name}</div>
+                      <div className="text-[11px] text-slate-500">{t.role}</div>
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <span className="text-[11px] font-mono font-bold text-[#00f5a0] px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/25 shadow-[0_0_12px_rgba(0,245,160,0.2)]">
+                    <span className="text-[11px] font-mono font-bold text-emerald-700 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 shadow-xs">
                       {t.metrics}
                     </span>
                   </div>

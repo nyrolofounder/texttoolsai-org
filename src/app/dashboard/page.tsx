@@ -25,10 +25,12 @@ import {
   Clock,
   Layers,
   Activity,
-  RefreshCw
+  RefreshCw,
+  Loader2
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useAuth } from "@/lib/auth-context";
+import { launchRazorpayCheckout, RAZORPAY_PLANS } from "@/lib/razorpay";
 import { 
   supabase,
   isSupabaseConfigured,
@@ -51,6 +53,34 @@ export default function DashboardPage() {
   const [selectedToolFilter, setSelectedToolFilter] = useState("all");
   const [viewFilter, setViewFilter] = useState<"all" | "starred">("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isUpgrading, setIsUpgrading] = useState(false);
+
+  const handleUpgradeToPro = async (cycle: "annual" | "monthly" = "annual") => {
+    try {
+      setIsUpgrading(true);
+      const targetPlanId =
+        cycle === "annual" ? RAZORPAY_PLANS.annual : RAZORPAY_PLANS.monthly;
+
+      await launchRazorpayCheckout({
+        planId: targetPlanId,
+        billingCycle: cycle,
+        customerName: user?.fullName || undefined,
+        customerEmail: user?.email || undefined,
+        userId: user?.id,
+        onSuccess: (res) => {
+          console.info("[Dashboard] Upgrade successful:", res);
+          refreshProfile();
+          window.location.reload();
+        },
+        onDismiss: () => {
+          setIsUpgrading(false);
+        },
+      });
+    } catch (err) {
+      console.error("[Dashboard] Razorpay Checkout Error:", err);
+      setIsUpgrading(false);
+    }
+  };
 
   // Live generation loader from Supabase PostgreSQL
   const loadGenerations = useCallback(async () => {
@@ -194,27 +224,27 @@ export default function DashboardPage() {
   const usagePct = currentPlan === "pro" ? 100 : Math.min(100, Math.round((wordsUsed / (user?.wordLimit || 5000)) * 100));
 
   return (
-    <main className="min-h-screen bg-[#030712] text-white selection:bg-cyan-500/30 selection:text-white relative pb-24 overflow-x-hidden">
-      {/* 3D Volumetric Canvas */}
+    <main className="min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-indigo-500/20 selection:text-indigo-900 relative pb-24 overflow-x-hidden">
+      {/* 3D Radiant Mesh Canvas */}
       <NeonBackgroundOrbs />
 
       {/* Enterprise Navigation Header */}
-      <header className="sticky top-0 z-40 bg-[#030712]/80 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center gap-4">
               <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/15 flex items-center justify-center backdrop-blur-md group-hover:border-cyan-400/50 transition-all duration-200 shadow-sm">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center shadow-xs group-hover:scale-105 transition-all duration-200">
                   <span className="font-mono font-bold text-white text-sm">
                     TT
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="font-bold text-white tracking-tight text-base">
-                    texttools<span className="text-white/60">ai</span>
+                  <span className="font-bold text-slate-900 tracking-tight text-base">
+                    texttools<span className="text-indigo-600">ai</span>
                   </span>
-                  <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/25">
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80">
                     dashboard
                   </span>
                 </div>
@@ -335,9 +365,21 @@ export default function DashboardPage() {
               <div className="mt-5 pt-3.5 border-t border-white/[0.08] flex items-center justify-between text-[11px] text-white/60">
                 <span>Cycle resets in 18 days</span>
                 {currentPlan === "free" && (
-                  <Link href="/settings/billing" className="text-cyan-400 hover:text-cyan-300 font-semibold tracking-tight">
-                    Upgrade →
-                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => handleUpgradeToPro("annual")}
+                    disabled={isUpgrading}
+                    className="text-cyan-400 hover:text-cyan-300 font-semibold tracking-tight cursor-pointer disabled:opacity-50 inline-flex items-center gap-1 active:scale-95 transition-transform"
+                  >
+                    {isUpgrading ? (
+                      <>
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                        <span>Opening...</span>
+                      </>
+                    ) : (
+                      <span>Upgrade →</span>
+                    )}
+                  </button>
                 )}
               </div>
             </div>
@@ -429,13 +471,24 @@ export default function DashboardPage() {
               </div>
               <div className="mt-5 pt-3.5 border-t border-white/[0.08]">
                 {currentPlan === "free" ? (
-                  <Link
-                    href="/settings/billing"
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-400 hover:text-cyan-300 tracking-tight"
+                  <button
+                    type="button"
+                    onClick={() => handleUpgradeToPro("annual")}
+                    disabled={isUpgrading}
+                    className="inline-flex items-center gap-1.5 text-[11px] font-bold text-cyan-400 hover:text-cyan-300 tracking-tight cursor-pointer disabled:opacity-50 active:scale-95 transition-transform"
                   >
-                    <span>Upgrade to Pro with Razorpay</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
+                    {isUpgrading ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Opening Razorpay Checkout...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Upgrade to Pro with Razorpay</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </>
+                    )}
+                  </button>
                 ) : (
                   <Link href="/settings/billing" className="text-[11px] text-white/60 hover:text-white font-mono">
                     Manage Subscription →

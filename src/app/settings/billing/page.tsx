@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   CreditCard, 
@@ -13,30 +14,72 @@ import {
   ArrowLeft, 
   Zap, 
   AlertTriangle,
-  HelpCircle,
   Clock,
-  ExternalLink,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import NeonBackgroundOrbs from "@/components/NeonBackgroundOrbs";
-import TiltCard from "@/components/TiltCard";
+import { launchRazorpayCheckout, loadRazorpayScript, RAZORPAY_PLANS } from "@/lib/razorpay";
 
 export default function BillingPage() {
+  const router = useRouter();
   const { user, upgradeToPro } = useAuth();
   const [billingCycle, setBillingCycle] = useState<"annual" | "monthly">("annual");
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [cancelConfirmed, setCancelConfirmed] = useState(false);
+  const [isLoadingCheckout, setIsLoadingCheckout] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const currentPlan = user?.plan || "free";
   const wordsUsed = user?.wordsUsedThisMonth || 3420;
   const wordLimit = currentPlan === "pro" ? "Unlimited" : (user?.wordLimit || 5000).toLocaleString();
 
-  // Razorpay payment links
-  const razorpayLink =
-    billingCycle === "annual"
-      ? process.env.NEXT_PUBLIC_RAZORPAY_ANNUAL_LINK || "https://rzp.io/l/texttools-pro-annual"
-      : process.env.NEXT_PUBLIC_RAZORPAY_MONTHLY_LINK || "https://rzp.io/l/texttools-pro-monthly";
+  useEffect(() => {
+    loadRazorpayScript().catch(() => {});
+  }, []);
+
+  const handleUpgradeToPro = async (cycle?: "annual" | "monthly") => {
+    try {
+      setIsLoadingCheckout(true);
+      setCheckoutError(null);
+      const selectedCycle = cycle || billingCycle;
+      const targetPlanId =
+        selectedCycle === "annual" ? RAZORPAY_PLANS.annual : RAZORPAY_PLANS.monthly;
+
+      const res = await fetch("/api/subscriptions/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planId: targetPlanId,
+          billingCycle: selectedCycle,
+          userId: user?.id,
+          email: user?.email,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to create subscription session");
+      const data = await res.json();
+      await launchRazorpayCheckout({
+        planId: targetPlanId,
+        billingCycle: selectedCycle,
+        subscriptionId: data.subscriptionId,
+        keyId: data.keyId,
+        customerName: user?.fullName || undefined,
+        customerEmail: user?.email || undefined,
+        userId: user?.id,
+        onSuccess: (response) => {
+          console.info("[BillingPage] Payment successful:", response);
+          router.push("/dashboard?success=true");
+        },
+        onDismiss: () => {
+          setIsLoadingCheckout(false);
+        },
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to open Razorpay checkout";
+      setCheckoutError(msg);
+      setIsLoadingCheckout(false);
+    }
+  };
 
   // Mock invoice records
   const invoices = [
@@ -67,21 +110,21 @@ export default function BillingPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#030712] text-white selection:bg-cyan-500/30 selection:text-white relative pb-24 overflow-x-hidden">
-      {/* 3D Volumetric Canvas */}
+    <main className="min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-indigo-500/20 selection:text-indigo-900 relative pb-24 overflow-x-hidden">
+      {/* 3D Radiant Mesh Canvas */}
       <NeonBackgroundOrbs />
 
       {/* Enterprise Frosted Glass Header */}
-      <header className="sticky top-0 z-40 bg-[#030712]/80 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs">
         {/* Top subtle specular reflection line */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/30 via-violet-400/40 to-transparent opacity-70" />
+        <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-indigo-500/40 via-violet-500/40 to-transparent" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <Link
                 href="/dashboard"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-medium text-white/80 hover:text-white transition-all shadow-sm active:scale-95"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 hover:text-slate-900 transition-all shadow-xs active:scale-95"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Back to Dashboard</span>
@@ -89,11 +132,11 @@ export default function BillingPage() {
             </div>
 
             <div className="flex items-center gap-2.5">
-              <span className="text-xs text-white/50 font-mono hidden sm:inline">Active Plan:</span>
+              <span className="text-xs text-slate-500 font-mono hidden sm:inline">Active Plan:</span>
               <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold uppercase tracking-wider ${
                 currentPlan === "pro"
-                  ? "bg-violet-500/15 text-violet-300 border border-violet-500/30 shadow-[0_0_12px_rgba(121,40,202,0.25)]"
-                  : "bg-white/[0.06] text-white/80 border border-white/10"
+                  ? "bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-xs"
+                  : "bg-slate-100 text-slate-700 border border-slate-200"
               }`}>
                 {currentPlan === "pro" ? "Pro Creator" : "Free Community"}
               </span>
@@ -177,13 +220,23 @@ export default function BillingPage() {
               ) : (
                 <button
                   type="button"
-                  onClick={upgradeToPro}
-                  className="relative group inline-flex items-center justify-center p-[1px] rounded-xl overflow-hidden font-semibold text-xs sm:text-sm tracking-tight transition-all active:scale-95"
+                  onClick={() => handleUpgradeToPro("annual")}
+                  disabled={isLoadingCheckout}
+                  className="relative group inline-flex items-center justify-center p-[1px] rounded-xl overflow-hidden font-semibold text-xs sm:text-sm tracking-tight transition-all active:scale-95 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500 group-hover:opacity-100 opacity-90 transition-opacity" />
                   <span className="relative px-6 py-3 rounded-[11px] bg-[#09090b]/90 group-hover:bg-[#09090b]/75 text-white flex items-center gap-2 backdrop-blur-xl transition-all shadow-[0_0_20px_rgba(0,242,254,0.3)]">
-                    <Sparkles className="w-4 h-4 text-cyan-400" />
-                    <span>Instant Simulate Upgrade</span>
+                    {isLoadingCheckout ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
+                        <span>Opening Razorpay...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 text-cyan-400" />
+                        <span>Upgrade to Pro Plan</span>
+                      </>
+                    )}
                   </span>
                 </button>
               )}
@@ -291,22 +344,37 @@ export default function BillingPage() {
                     </div>
                   </div>
 
-                  <a
-                    href={razorpayLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full sm:w-auto relative group inline-flex items-center justify-center p-[1px] rounded-xl overflow-hidden font-bold text-sm tracking-tight transition-all active:scale-95 shadow-[0_0_25px_rgba(0,242,254,0.3)] hover:shadow-[0_0_35px_rgba(0,242,254,0.5)]"
+                  <button
+                    type="button"
+                    onClick={() => handleUpgradeToPro(billingCycle)}
+                    disabled={isLoadingCheckout}
+                    className="w-full sm:w-auto relative group inline-flex items-center justify-center p-[1px] rounded-xl overflow-hidden font-bold text-sm tracking-tight transition-all active:scale-95 shadow-[0_0_25px_rgba(0,242,254,0.3)] hover:shadow-[0_0_35px_rgba(0,242,254,0.5)] disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer"
                   >
                     <span className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500 group-hover:opacity-100 opacity-90 transition-opacity" />
                     <span className="relative w-full px-7 py-3 rounded-[11px] bg-[#09090b]/90 group-hover:bg-[#09090b]/75 text-white flex items-center justify-center gap-2.5 backdrop-blur-xl transition-all">
-                      {/* Razorpay SVG */}
-                      <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
-                        <path d="M22.436 0l-11.91 7.773-3.626 5.679 4.382-2.859 3.037-1.982 7.026-4.587-6.096 19.976h4.375l6.812-24zm-14.34 9.369l-8.096 5.284 3.737 9.347h4.721l-2.091-5.231 4.707-3.072 2.378-3.729-5.356-2.599z" />
-                      </svg>
-                      <span>Upgrade via Razorpay</span>
-                      <ArrowRight className="w-4 h-4" />
+                      {isLoadingCheckout ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-white" />
+                          <span>Opening Razorpay...</span>
+                        </>
+                      ) : (
+                        <>
+                          {/* Razorpay SVG */}
+                          <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
+                            <path d="M22.436 0l-11.91 7.773-3.626 5.679 4.382-2.859 3.037-1.982 7.026-4.587-6.096 19.976h4.375l6.812-24zm-14.34 9.369l-8.096 5.284 3.737 9.347h4.721l-2.091-5.231 4.707-3.072 2.378-3.729-5.356-2.599z" />
+                          </svg>
+                          <span>Upgrade via Razorpay</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
                     </span>
-                  </a>
+                  </button>
+
+                  {checkoutError && (
+                    <p className="mt-2 text-xs text-rose-400 text-center font-mono">
+                      {checkoutError}
+                    </p>
+                  )}
 
                   <div className="mt-2 text-[10px] font-mono text-white/50 text-center lg:text-right">
                     Supports UPI, Credit/Debit, NetBanking
@@ -436,7 +504,6 @@ export default function BillingPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    setCancelConfirmed(true);
                     setShowCancelModal(false);
                     alert("Your subscription cancellation request has been scheduled with Razorpay. You retain access until Nov 01, 2026.");
                   }}

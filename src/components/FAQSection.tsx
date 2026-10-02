@@ -34,17 +34,17 @@ export default function FAQSection() {
   ];
 
   return (
-    <section id="faq" className="py-20 md:py-28 relative border-t border-white/[0.08] bg-[#030712]">
+    <section id="faq" className="py-20 md:py-28 relative border-t border-slate-200/80 bg-[#f8fafc]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-4 shadow-[0_0_15px_rgba(0,242,254,0.2)]">
-            <HelpCircle className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-700 text-xs font-mono uppercase tracking-wider mb-4 shadow-xs">
+            <HelpCircle className="w-3.5 h-3.5 text-indigo-600" />
             <span>Got Questions?</span>
           </div>
-          <h2 className="text-fluid-title text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="text-fluid-title text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
             Frequently Asked Questions
           </h2>
-          <p className="mt-3 text-xs sm:text-sm md:text-base text-neutral-300">
+          <p className="mt-3 text-xs sm:text-sm md:text-base text-slate-600">
             Everything you need to know about the engine, privacy, bypass safety, and billing.
           </p>
         </div>
@@ -57,30 +57,30 @@ export default function FAQSection() {
                 key={idx}
                 style={{
                   boxShadow: isOpen
-                    ? "0 20px 45px -10px rgba(0, 0, 0, 0.9), inset 0 1px 0 0 rgba(255, 255, 255, 0.16)"
-                    : "0 10px 25px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.08)",
+                    ? "0 10px 30px -10px rgba(99, 102, 241, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.9)"
+                    : "0 4px 15px -5px rgba(0, 0, 0, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.9)",
                 }}
                 className={`rounded-2xl border transition-all duration-200 overflow-hidden backdrop-blur-2xl ${
                   isOpen
-                    ? "border-cyan-500/30 bg-[#0d1322]/90"
-                    : "border-white/10 bg-[#0b0f19]/80 hover:border-white/20"
+                    ? "border-indigo-300 bg-white ring-2 ring-indigo-500/10"
+                    : "border-slate-200/90 bg-white/90 hover:border-slate-300"
                 }`}
               >
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="w-full py-4 px-4 sm:px-6 text-left flex items-center justify-between gap-3 text-sm sm:text-base font-semibold text-white hover:text-cyan-300 min-h-[48px] transition-colors"
+                  className="w-full py-4 px-4 sm:px-6 text-left flex items-center justify-between gap-3 text-sm sm:text-base font-semibold text-slate-900 hover:text-indigo-600 min-h-[48px] transition-colors cursor-pointer"
                 >
                   <span className="tracking-tight leading-snug">{faq.q}</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-neutral-400 shrink-0 transition-transform duration-200 ${
-                      isOpen ? "rotate-180 text-cyan-400" : ""
+                    className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${
+                      isOpen ? "rotate-180 text-indigo-600" : ""
                     }`}
                   />
                 </button>
 
                 {isOpen && (
-                  <div className="px-6 pb-5 text-xs sm:text-sm text-neutral-300 leading-relaxed border-t border-white/[0.06] pt-3.5">
+                  <div className="px-6 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3.5">
                     {faq.a}
                   </div>
                 )}
