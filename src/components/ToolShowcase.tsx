@@ -46,38 +46,38 @@ export default function ToolShowcase({ onSelectTool }: ToolShowcaseProps) {
   };
 
   return (
-    <section id="showcase" className="py-24 md:py-32 relative border-t border-white/[0.08] bg-[#05050a]/90">
+    <section id="showcase" className="py-20 md:py-32 relative border-t border-white/[0.08] bg-[#030712]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header with Chromatic Typography */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-4 shadow-[0_0_15px_rgba(0,242,254,0.2)]">
             <Zap className="w-3.5 h-3.5 text-cyan-400" />
             <span>Engine Architecture</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight sm:tracking-tighter">
+          <h2 className="text-fluid-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
             Built for Extreme Precision, Not Generic Chat
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-neutral-300">
+          <p className="mt-4 text-sm sm:text-base md:text-lg text-neutral-300">
             Unlike general-purpose LLMs that waffle with polite apologies, each TextTools engine is tuned for a distinct production outcome with verifiable metrics.
           </p>
         </div>
 
-        {/* 5 Tool Nav Tabs with Chamfered Glass & Spring Physics */}
-        <div className="flex items-center justify-center gap-2.5 flex-wrap mb-12">
+        {/* 5 Tool Nav Tabs with Chamfered Glass & Mobile Horizontal Scroll */}
+        <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-2.5 overflow-x-auto scrollbar-none pb-3 sm:pb-0 mb-8 sm:mb-12 touch-pan-x -mx-4 px-4 sm:mx-0 sm:px-0">
           {TOOLS.map((tool) => {
             const isActive = activeTab === tool.id;
             return (
               <motion.button
                 key={tool.id}
                 type="button"
-                whileHover={{ scale: 1.04, y: -2 }}
+                whileHover={{ scale: 1.03, y: -1 }}
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 450, damping: 22 }}
                 onClick={() => setActiveTab(tool.id)}
-                className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl text-sm font-semibold transition-all ${
+                className={`flex items-center gap-2 px-3.5 py-2.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-semibold shrink-0 min-h-[44px] transition-all ${
                   isActive
-                    ? "bg-[#110f2c] border border-white/30 text-white shadow-[0_10px_30px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.25)]"
-                    : "bg-[#09081a]/70 text-neutral-400 hover:text-white hover:bg-[#100e28]/80 border border-white/10"
+                    ? "bg-[#0b0f19] border border-cyan-500/40 text-white shadow-[0_10px_30px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.2)]"
+                    : "bg-[#0b0f19]/60 text-neutral-400 hover:text-white hover:bg-[#0b0f19]/90 border border-white/10"
                 }`}
               >
                 {getToolIcon(tool.icon)}
@@ -96,9 +96,9 @@ export default function ToolShowcase({ onSelectTool }: ToolShowcaseProps) {
             exit={{ opacity: 0, y: -20 }}
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
             style={{
-              boxShadow: `0 35px 90px -20px ${getToolGlow(selectedTool.id)}, 0 0 50px -15px ${getToolGlow(selectedTool.id)}, inset 0 1px 0 0 rgba(255, 255, 255, 0.24), inset 0 -1px 0 0 rgba(0, 0, 0, 0.5)`,
+              boxShadow: `0 35px 90px -20px ${getToolGlow(selectedTool.id)}, 0 0 50px -15px ${getToolGlow(selectedTool.id)}, inset 0 1px 0 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 0 rgba(0, 0, 0, 0.5)`,
             }}
-            className="rounded-3xl border border-white/20 bg-gradient-to-b from-[#0b0a22]/95 to-[#060514]/95 p-7 sm:p-9 lg:p-12 shadow-2xl relative overflow-hidden backdrop-blur-2xl"
+            className="rounded-2xl sm:rounded-3xl border border-white/10 bg-[#0b0f19]/90 p-5 sm:p-8 lg:p-12 shadow-2xl relative overflow-hidden backdrop-blur-2xl"
           >
             {/* Top specular reflection line */}
             <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/50 via-violet-400/50 via-pink-400/50 to-transparent" />
@@ -152,7 +152,7 @@ export default function ToolShowcase({ onSelectTool }: ToolShowcaseProps) {
                 <div className="pt-4">
                   <motion.button
                     type="button"
-                    whileHover={{ scale: 1.035, y: -1 }}
+                    whileHover={{ scale: 1.03, y: -1 }}
                     whileTap={{ scale: 0.97 }}
                     transition={{ type: "spring", stiffness: 450, damping: 20 }}
                     onClick={() => {
@@ -160,11 +160,11 @@ export default function ToolShowcase({ onSelectTool }: ToolShowcaseProps) {
                       const el = document.getElementById("workspace");
                       if (el) el.scrollIntoView({ behavior: "smooth" });
                     }}
-                    className="relative group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-bold text-white overflow-hidden shadow-[0_10px_35px_rgba(0,242,254,0.35)] transition-all"
+                    className="w-full sm:w-auto relative group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-bold text-white overflow-hidden shadow-[0_10px_35px_rgba(0,242,254,0.35)] min-h-[46px] transition-all"
                   >
                     <span className="absolute inset-0 bg-gradient-to-r from-[#00f2fe] via-[#7928ca] to-[#db2777]" />
                     <span className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-                    <span className="relative z-10 flex items-center gap-2">
+                    <span className="relative z-10 flex items-center justify-center gap-2">
                       <span>Launch {selectedTool.name} in Studio</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </span>

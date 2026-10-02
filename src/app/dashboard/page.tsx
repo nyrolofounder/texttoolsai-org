@@ -194,12 +194,12 @@ export default function DashboardPage() {
   const usagePct = currentPlan === "pro" ? 100 : Math.min(100, Math.round((wordsUsed / (user?.wordLimit || 5000)) * 100));
 
   return (
-    <main className="min-h-screen bg-[#05050a] text-white selection:bg-cyan-500/30 selection:text-white relative pb-24 overflow-x-hidden">
+    <main className="min-h-screen bg-[#030712] text-white selection:bg-cyan-500/30 selection:text-white relative pb-24 overflow-x-hidden">
       {/* 3D Volumetric Canvas */}
       <NeonBackgroundOrbs />
 
       {/* Enterprise Navigation Header */}
-      <header className="sticky top-0 z-40 bg-[#05050a]/75 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+      <header className="sticky top-0 z-40 bg-[#030712]/80 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}

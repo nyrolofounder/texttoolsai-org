@@ -76,15 +76,15 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#05050a] text-white selection:bg-cyan-500/30 selection:text-white relative flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+    <main className="min-h-screen bg-[#030712] text-white selection:bg-cyan-500/30 selection:text-white relative flex items-center justify-center p-4 sm:p-6 overflow-hidden">
       {/* 3D Volumetric Background Canvas */}
       <NeonBackgroundOrbs />
 
       {/* Top Left Return Link */}
-      <div className="absolute top-6 left-6 z-20">
+      <div className="absolute top-4 sm:top-6 left-4 sm:left-6 z-20">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-medium text-white/80 hover:text-white backdrop-blur-xl transition-all shadow-sm active:scale-95"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-medium text-white/80 hover:text-white backdrop-blur-xl transition-all shadow-sm active:scale-95 min-h-[38px]"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to texttoolsai.org</span>
@@ -98,7 +98,7 @@ export default function LoginPage() {
         style={{
           boxShadow: "0 35px 90px -25px rgba(0, 0, 0, 0.95), 0 0 60px -20px rgba(76, 29, 149, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.16)",
         }}
-        className="w-full max-w-md rounded-2xl border border-white/10 bg-[#09090b]/80 p-8 sm:p-10 backdrop-blur-xl relative z-10 my-12"
+        className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0b0f19]/80 p-6 sm:p-10 backdrop-blur-xl relative z-10 my-12"
       >
         {/* Top Specular Edge Beam */}
         <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 via-violet-400/40 to-transparent" />

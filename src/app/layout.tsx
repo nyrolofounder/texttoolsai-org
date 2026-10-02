@@ -84,7 +84,7 @@ export default function RootLayout({
       <head>
         <StructuredData />
       </head>
-      <body className="min-h-screen bg-[#05050a] text-[#ededed] selection:bg-cyan-500/30 selection:text-white flex flex-col font-sans">
+      <body className="min-h-screen bg-[#030712] text-white selection:bg-cyan-500/30 selection:text-white flex flex-col font-sans">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

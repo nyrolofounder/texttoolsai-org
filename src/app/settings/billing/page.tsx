@@ -67,12 +67,12 @@ export default function BillingPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#05050a] text-white selection:bg-cyan-500/30 selection:text-white relative pb-24 overflow-x-hidden">
+    <main className="min-h-screen bg-[#030712] text-white selection:bg-cyan-500/30 selection:text-white relative pb-24 overflow-x-hidden">
       {/* 3D Volumetric Canvas */}
       <NeonBackgroundOrbs />
 
       {/* Enterprise Frosted Glass Header */}
-      <header className="sticky top-0 z-40 bg-[#05050a]/75 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+      <header className="sticky top-0 z-40 bg-[#030712]/80 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
         {/* Top subtle specular reflection line */}
         <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/30 via-violet-400/40 to-transparent opacity-70" />
 

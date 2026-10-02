@@ -1,25 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: #05050a;
-  --foreground: #f3f4f6;
-  --canvas-base: #05050a;
-  --canvas-indigo: #0b0b1c;
-  --canvas-violet: #13072e;
+  --background: #030712;
+  --foreground: #f8fafc;
+  --canvas-base: #030712;
+  --canvas-indigo: #0a0f1d;
+  --canvas-violet: #110e2e;
   
-  /* Volumetric Neon Glow Palettes */
-  --glow-cyan: #00f2fe;
-  --glow-violet: #4c1d95;
-  --glow-neon-violet: #7928ca;
-  --glow-magenta: #db2777;
-  --glow-emerald: #00f5a0;
-  --glow-amber: #ffb703;
+  /* Volumetric Neon Glow Palettes (Refined & Softened) */
+  --glow-cyan: #06b6d4;
+  --glow-violet: #3b0764;
+  --glow-neon-violet: #6d28d9;
+  --glow-magenta: #be185d;
+  --glow-emerald: #059669;
+  --glow-amber: #d97706;
   
   /* Glassmorphism & Chamfer Bevels */
-  --glass-bg: rgba(9, 9, 18, 0.78);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-border-hover: rgba(255, 255, 255, 0.28);
-  --glass-chamfer-top: rgba(255, 255, 255, 0.22);
+  --glass-bg: rgba(11, 15, 25, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(255, 255, 255, 0.22);
+  --glass-chamfer-top: rgba(255, 255, 255, 0.18);
 }
 
 @theme inline {
@@ -36,41 +36,54 @@
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
-  background-color: #05050a;
+  background-color: #030712;
 }
 
 body {
-  background: #05050a;
-  color: #f3f4f6;
+  background: #030712;
+  color: #f8fafc;
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
-  selection-background-color: #4c1d95;
+  selection-background-color: #3b0764;
   selection-color: #ffffff;
 }
 
 ::selection {
-  background-color: rgba(76, 29, 149, 0.55);
+  background-color: rgba(59, 7, 100, 0.55);
   color: #ffffff;
 }
 
-/* Custom Scrollbar for Vercel/Linear dark theme */
+/* Custom Scrollbar for Tier-1 Obsidian-Indigo SaaS */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #05050a;
+  background: #030712;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e1e2f;
+  background: #1e293b;
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #33334d;
+  background: #334155;
+}
+
+/* Fluid Typography Utilities */
+.text-fluid-hero {
+  font-size: clamp(2rem, 5.5vw + 0.5rem, 4.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.text-fluid-title {
+  font-size: clamp(1.5rem, 3.5vw + 0.5rem, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
 }
 
 /* 3D Perspective & Hardware-Accelerated Layering */
@@ -100,52 +113,52 @@ body {
 
 /* Multi-layered Deep Space Mesh Grid Lines */
 .bg-mesh-grid {
-  background-size: 52px 52px;
+  background-size: 48px 48px;
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
 .bg-dot-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 /* Chamfered 3D Specular Glass Container */
 .glass-chamfer-3d {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.015) 100%), rgba(8, 8, 17, 0.82);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(11, 15, 25, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 
-    0 30px 70px -20px rgba(0, 0, 0, 0.95),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.45);
+    0 30px 70px -20px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.4);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-chamfer-3d:hover {
-  border-color: rgba(255, 255, 255, 0.24);
+  border-color: rgba(255, 255, 255, 0.2);
   box-shadow: 
-    0 40px 90px -25px rgba(0, 0, 0, 0.98),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.32),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.5);
+    0 40px 90px -25px rgba(0, 0, 0, 0.95),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.26),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.45);
 }
 
 /* High-Contrast Chromatic Typography */
 .text-chromatic-hero {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 45%, #BAE6FD 85%, #00F2FE 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 50%, #94A3B8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 25px rgba(0, 242, 254, 0.35));
+  filter: drop-shadow(0 2px 20px rgba(6, 182, 212, 0.25));
   letter-spacing: -0.04em;
 }
 
 .text-chromatic-gradient {
-  background: linear-gradient(135deg, #00f2fe 0%, #a855f7 35%, #ec4899 75%, #ff0080 100%);
+  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 35%, #ec4899 75%, #f43f5e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 35px rgba(121, 40, 202, 0.45));
+  filter: drop-shadow(0 0 30px rgba(109, 40, 217, 0.35));
   letter-spacing: -0.035em;
 }
 
@@ -157,14 +170,14 @@ body {
 }
 
 .text-chromatic-cyan {
-  background: linear-gradient(135deg, #ffffff 0%, #bbf7d0 30%, #00f2fe 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 40%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.03em;
 }
 
 .text-chromatic-violet {
-  background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 40%, #c084fc 80%, #db2777 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #ddd6fe 40%, #a855f7 80%, #db2777 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.03em;
@@ -174,41 +187,41 @@ body {
 @keyframes volumetric-drift-1 {
   0%, 100% {
     transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.75;
+    opacity: 0.7;
   }
   33% {
-    transform: translate3d(45px, -50px, 0) scale(1.12);
-    opacity: 0.9;
+    transform: translate3d(35px, -40px, 0) scale(1.08);
+    opacity: 0.85;
   }
   66% {
-    transform: translate3d(-30px, 40px, 0) scale(0.92);
-    opacity: 0.65;
+    transform: translate3d(-25px, 30px, 0) scale(0.94);
+    opacity: 0.6;
   }
 }
 
 @keyframes volumetric-drift-2 {
   0%, 100% {
     transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.7;
+    opacity: 0.65;
   }
   40% {
-    transform: translate3d(-55px, 45px, 0) scale(1.15);
-    opacity: 0.88;
+    transform: translate3d(-40px, 35px, 0) scale(1.1);
+    opacity: 0.82;
   }
   80% {
-    transform: translate3d(40px, -35px, 0) scale(0.95);
-    opacity: 0.62;
+    transform: translate3d(30px, -25px, 0) scale(0.96);
+    opacity: 0.58;
   }
 }
 
 @keyframes volumetric-drift-3 {
   0%, 100% {
     transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.65;
+    opacity: 0.6;
   }
   50% {
-    transform: translate3d(50px, 60px, 0) scale(1.2);
-    opacity: 0.85;
+    transform: translate3d(40px, 45px, 0) scale(1.12);
+    opacity: 0.78;
   }
 }
 
@@ -217,27 +230,27 @@ body {
     background-position: 0px 0px;
   }
   100% {
-    background-position: 52px 52px;
+    background-position: 48px 48px;
   }
 }
 
 .animate-volumetric-1 {
-  animation: volumetric-drift-1 16s ease-in-out infinite;
+  animation: volumetric-drift-1 18s ease-in-out infinite;
   will-change: transform, opacity;
 }
 
 .animate-volumetric-2 {
-  animation: volumetric-drift-2 20s ease-in-out infinite;
+  animation: volumetric-drift-2 22s ease-in-out infinite;
   will-change: transform, opacity;
 }
 
 .animate-volumetric-3 {
-  animation: volumetric-drift-3 24s ease-in-out infinite;
+  animation: volumetric-drift-3 26s ease-in-out infinite;
   will-change: transform, opacity;
 }
 
 .animate-mesh {
-  animation: mesh-drift 40s linear infinite;
+  animation: mesh-drift 45s linear infinite;
 }
 
 /* Specular Shimmer Beam */
@@ -257,26 +270,20 @@ body {
 /* Physical Depth Drop-Shadow Presets */
 .shadow-depth-violet {
   box-shadow: 
-    0 30px 90px -20px rgba(76, 29, 149, 0.4),
-    0 0 50px -10px rgba(76, 29, 149, 0.25);
+    0 25px 70px -20px rgba(59, 7, 100, 0.35),
+    0 0 40px -10px rgba(59, 7, 100, 0.2);
 }
 
 .shadow-depth-cyan {
   box-shadow: 
-    0 30px 90px -20px rgba(0, 242, 254, 0.35),
-    0 0 50px -10px rgba(0, 242, 254, 0.2);
-}
-
-.shadow-depth-magenta {
-  box-shadow: 
-    0 30px 90px -20px rgba(219, 39, 119, 0.35),
-    0 0 50px -10px rgba(219, 39, 119, 0.2);
+    0 25px 70px -20px rgba(6, 182, 212, 0.3),
+    0 0 40px -10px rgba(6, 182, 212, 0.15);
 }
 
 .shadow-depth-cockpit {
   box-shadow: 
-    0 40px 100px -25px rgba(0, 0, 0, 0.95),
-    0 0 60px -15px rgba(76, 29, 149, 0.35),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.5);
+    0 35px 90px -25px rgba(0, 0, 0, 0.9),
+    0 0 50px -15px rgba(59, 7, 100, 0.25),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.4);
 }

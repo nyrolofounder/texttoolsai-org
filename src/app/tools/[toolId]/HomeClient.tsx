@@ -17,7 +17,7 @@ export default function HomeClient({ initialToolId = "humanizer" }: { initialToo
   const [activeToolId, setActiveToolId] = useState<string>(initialToolId);
 
   return (
-    <main className="min-h-screen bg-[#05050a] text-white selection:bg-cyan-500/30 selection:text-white relative overflow-x-hidden">
+    <main className="min-h-screen bg-[#030712] text-white selection:bg-cyan-500/30 selection:text-white relative overflow-x-hidden">
       {/* 3D Glowing Neon Background Lighting Orbs */}
       <NeonBackgroundOrbs />
 

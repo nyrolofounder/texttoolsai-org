@@ -74,35 +74,35 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="py-24 md:py-32 relative border-t border-white/[0.08] bg-[#05050a]/90">
+    <section className="py-20 md:py-32 relative border-t border-white/[0.08] bg-[#030712]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[#00f5a0] text-xs font-mono uppercase tracking-wider mb-4 shadow-[0_0_15px_rgba(0,245,160,0.2)]">
             <Sparkles className="w-3.5 h-3.5 text-[#00f5a0]" />
             <span>Wall of Proof</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight sm:tracking-tighter">
+          <h2 className="text-fluid-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
             Loved by 45,000+ Creators, Writers & Builders
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-neutral-300">
+          <p className="mt-4 text-sm sm:text-base md:text-lg text-neutral-300">
             See how high-output teams use our 5 core text tools to publish better content, bypass false AI flags, and reclaim their workdays.
           </p>
         </div>
 
         {/* 6-Card Grid Wrapped with Chamfered TiltCards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {testimonials.map((t, idx) => (
             <TiltCard
               key={idx}
               glowColor={t.glowColor}
-              maxTilt={7}
-              scaleOnHover={1.025}
+              maxTilt={5}
+              scaleOnHover={1.02}
             >
               <div 
                 style={{
-                  boxShadow: "0 25px 60px -20px rgba(0, 0, 0, 0.9), inset 0 1px 0 0 rgba(255, 255, 255, 0.16)",
+                  boxShadow: "0 25px 60px -20px rgba(0, 0, 0, 0.9), inset 0 1px 0 0 rgba(255, 255, 255, 0.12)",
                 }}
-                className="p-7 rounded-3xl bg-[#09081d]/80 border border-white/12 hover:border-white/25 transition-all flex flex-col justify-between h-full backdrop-blur-2xl shadow-xl"
+                className="p-5 sm:p-7 rounded-2xl sm:rounded-3xl bg-[#0b0f19]/80 border border-white/10 hover:border-white/20 transition-all flex flex-col justify-between h-full backdrop-blur-2xl shadow-xl"
               >
                 <div>
                   {/* Rating & Tool Pill */}
