@@ -34,44 +34,53 @@ export default function FAQSection() {
   ];
 
   return (
-    <section id="faq" className="py-20 md:py-28 relative border-t border-white/[0.06] bg-[#040404]">
+    <section id="faq" className="py-20 md:py-28 relative border-t border-white/[0.08] bg-[#05050a]/90">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-800/80 border border-neutral-700 text-neutral-300 text-xs font-mono uppercase tracking-wider mb-4">
-            <HelpCircle className="w-3.5 h-3.5 text-blue-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-4 shadow-[0_0_15px_rgba(0,242,254,0.2)]">
+            <HelpCircle className="w-3.5 h-3.5 text-cyan-400" />
             <span>Got Questions?</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight sm:tracking-tighter">
             Frequently Asked Questions
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-neutral-400">
+          <p className="mt-3 text-sm sm:text-base text-neutral-300">
             Everything you need to know about the engine, privacy, bypass safety, and billing.
           </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           {faqs.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
               <div
                 key={idx}
-                className="rounded-xl border border-white/[0.08] bg-[#080808] overflow-hidden transition-colors"
+                style={{
+                  boxShadow: isOpen
+                    ? "0 20px 45px -10px rgba(0, 0, 0, 0.9), inset 0 1px 0 0 rgba(255, 255, 255, 0.2)"
+                    : "0 10px 25px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.1)",
+                }}
+                className={`rounded-2xl border transition-all duration-200 overflow-hidden backdrop-blur-2xl ${
+                  isOpen
+                    ? "border-cyan-500/40 bg-[#0c0a24]/90"
+                    : "border-white/10 bg-[#080718]/70 hover:border-white/20"
+                }`}
               >
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="w-full py-4 px-5 text-left flex items-center justify-between gap-4 text-sm sm:text-base font-semibold text-white hover:text-blue-400 transition-colors"
+                  className="w-full py-4.5 px-6 text-left flex items-center justify-between gap-4 text-sm sm:text-base font-semibold text-white hover:text-cyan-300 transition-colors"
                 >
-                  <span>{faq.q}</span>
+                  <span className="tracking-tight">{faq.q}</span>
                   <ChevronDown
                     className={`w-4 h-4 text-neutral-400 shrink-0 transition-transform duration-200 ${
-                      isOpen ? "rotate-180 text-blue-400" : ""
+                      isOpen ? "rotate-180 text-cyan-400" : ""
                     }`}
                   />
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-neutral-400 leading-relaxed border-t border-white/[0.04] pt-3">
+                  <div className="px-6 pb-5 text-xs sm:text-sm text-neutral-300 leading-relaxed border-t border-white/[0.06] pt-3.5">
                     {faq.a}
                   </div>
                 )}

@@ -6,7 +6,7 @@ import { TOOLS } from "@/data/tools";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/[0.08] bg-[#030303] text-neutral-400 text-xs sm:text-sm">
+    <footer className="border-t border-white/10 bg-[#05050a] text-neutral-400 text-xs sm:text-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand Info & Newsletter */}

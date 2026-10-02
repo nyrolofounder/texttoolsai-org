@@ -44,12 +44,12 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#040404]/85 backdrop-blur-2xl border-b border-white/[0.08] shadow-[0_15px_40px_rgba(0,0,0,0.85)]"
+          ? "bg-[#05050a]/85 backdrop-blur-2xl border-b border-white/10 shadow-[0_15px_40px_rgba(0,0,0,0.9)]"
           : "bg-transparent border-b border-transparent"
       }`}
     >
       {/* Top subtle specular reflection line */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/30 via-violet-500/40 via-fuchsia-500/30 to-transparent opacity-80" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 via-violet-400/50 via-pink-400/40 to-transparent opacity-85" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -89,8 +89,8 @@ export default function Navbar() {
                 </button>
 
                 {toolsDropdownOpen && (
-                  <div className="absolute top-full left-0 w-84 p-2 mt-2 bg-[#080808]/95 border border-white/15 rounded-2xl shadow-[0_25px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl grid gap-1 z-50 animate-in fade-in zoom-in-95 duration-150">
-                    <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-semibold border-b border-white/[0.06] mb-1">
+                  <div className="absolute top-full left-0 w-84 p-2 mt-2 bg-[#09081a]/95 border border-white/20 rounded-2xl shadow-[0_30px_70px_rgba(0,0,0,0.95),inset_0_1px_0_0_rgba(255,255,255,0.22)] backdrop-blur-2xl grid gap-1 z-50 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold border-b border-white/[0.08] mb-1">
                       Neural Text Processors
                     </div>
                     {TOOLS.map((t) => (
@@ -195,7 +195,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="sm:hidden px-4 pt-3 pb-6 bg-[#080808]/98 border-b border-neutral-800 space-y-3 backdrop-blur-2xl">
+        <div className="sm:hidden px-4 pt-3 pb-6 bg-[#070617]/98 border-b border-white/10 space-y-3 backdrop-blur-2xl">
           <div className="text-xs uppercase tracking-wider text-cyan-400 font-semibold px-2 font-mono">
             5 Core AI Engines
           </div>

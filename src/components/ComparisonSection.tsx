@@ -1,6 +1,7 @@
 "use client";
 
-import { Check, X, Zap, Cpu, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+import { Check, X, ArrowRight, Cpu, Sparkles } from "lucide-react";
 
 export default function ComparisonSection() {
   const comparisonItems = [
@@ -43,14 +44,14 @@ export default function ComparisonSection() {
   ];
 
   return (
-    <section id="features" className="py-24 md:py-32 relative border-t border-white/[0.08] bg-[#030303]">
+    <section id="features" className="py-24 md:py-32 relative border-t border-white/[0.08] bg-[#05050a]/90">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/30 text-violet-300 text-xs font-mono uppercase tracking-wider mb-4 shadow-[0_0_15px_rgba(121,40,202,0.2)]">
             <Cpu className="w-3.5 h-3.5 text-violet-400" />
             <span>Competitive Matrix</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight sm:tracking-tighter">
             Engineered for Precision, Not Conversation
           </h2>
           <p className="mt-4 text-base sm:text-lg text-neutral-300">
@@ -58,12 +59,20 @@ export default function ComparisonSection() {
           </p>
         </div>
 
-        {/* Comparison Matrix Table with 3D Glass Surface */}
-        <div className="rounded-3xl border border-white/15 bg-[#080808]/90 overflow-hidden shadow-2xl backdrop-blur-2xl">
+        {/* Comparison Matrix Table with Chamfered 3D Specular Glass */}
+        <div 
+          style={{
+            boxShadow: "0 35px 90px -25px rgba(0, 0, 0, 0.95), 0 0 50px -15px rgba(76, 29, 149, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.22)",
+          }}
+          className="rounded-3xl border border-white/20 bg-[#080818]/90 overflow-hidden shadow-2xl backdrop-blur-2xl"
+        >
+          {/* Top specular reflection line */}
+          <div className="h-[1px] bg-gradient-to-r from-transparent via-cyan-400/50 via-violet-400/50 to-transparent" />
+
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-white/10 bg-neutral-950/90">
+                <tr className="border-b border-white/10 bg-[#0c0c22]/90">
                   <th className="py-5 px-6 text-sm font-bold text-neutral-300 w-1/3">
                     Capability & Architecture
                   </th>
@@ -86,7 +95,7 @@ export default function ComparisonSection() {
               </thead>
               <tbody className="divide-y divide-white/[0.06] text-xs sm:text-sm">
                 {comparisonItems.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
+                  <tr key={idx} className="hover:bg-white/[0.025] transition-colors">
                     <td className="py-4.5 px-6 text-neutral-200 font-medium">
                       {item.feature}
                     </td>
@@ -115,28 +124,37 @@ export default function ComparisonSection() {
           </div>
         </div>
 
-        {/* 3D Glass Callout Card Underneath */}
-        <div className="mt-10 p-8 rounded-3xl bg-gradient-to-r from-cyan-950/25 via-violet-950/25 to-pink-950/25 border border-white/15 backdrop-blur-2xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_0_40px_rgba(0,242,254,0.1)]">
+        {/* 3D Chamfered Glass Callout Card Underneath */}
+        <div 
+          style={{
+            boxShadow: "0 30px 80px -20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 242, 254, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.22)",
+          }}
+          className="mt-10 p-8 rounded-3xl bg-gradient-to-r from-cyan-950/30 via-violet-950/30 to-pink-950/30 border border-white/20 backdrop-blur-2xl flex flex-col md:flex-row items-center justify-between gap-6"
+        >
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(0,242,254,0.25)]">
-              <Zap className="w-7 h-7 text-cyan-400" />
+            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(0,242,254,0.3)]">
+              <Sparkles className="w-6 h-6 text-cyan-400" />
             </div>
             <div>
-              <h4 className="text-white font-bold text-lg">
-                Ready to cut 8 hours of writing and editing every week?
+              <h4 className="text-lg font-bold text-white tracking-tight">
+                Ready to cut hours of tedious prompt engineering?
               </h4>
-              <p className="text-xs sm:text-sm text-neutral-300 mt-1">
-                Join 45,000+ teams who use TextToolsAI for daily publishing, code docs, and client deliverables.
+              <p className="text-sm text-neutral-300 mt-0.5">
+                Launch the interactive studio and start processing text immediately.
               </p>
             </div>
           </div>
 
-          <a
+          <motion.a
             href="#workspace"
-            className="px-6 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-cyan-500 via-indigo-600 to-fuchsia-600 hover:brightness-110 transition-all shrink-0 shadow-[0_0_25px_rgba(0,242,254,0.35)]"
+            whileHover={{ scale: 1.04, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 450, damping: 20 }}
+            className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-[#00f2fe] via-[#7928ca] to-[#db2777] shadow-[0_0_30px_rgba(0,242,254,0.35)] shrink-0"
           >
-            Launch Free Studio
-          </a>
+            <span>Launch Studio Free</span>
+            <ArrowRight className="w-4 h-4" />
+          </motion.a>
         </div>
       </div>
     </section>

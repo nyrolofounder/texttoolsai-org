@@ -5,18 +5,18 @@ import { ArrowRight, Sparkles, Shield, Zap, Cpu } from "lucide-react";
 
 export default function CtaBanner() {
   return (
-    <section className="py-20 md:py-32 relative border-t border-white/[0.08] bg-gradient-to-b from-[#030303] via-[#080808] to-[#020202] overflow-hidden">
-      {/* 3D Multi-Layer Ambient Neon Lighting Vortex */}
+    <section className="py-20 md:py-32 relative border-t border-white/[0.08] bg-gradient-to-b from-[#05050a] via-[#0b0822] to-[#05050a] overflow-hidden">
+      {/* 3D Multi-Layer Volumetric Ambient Lighting Vortex */}
       <div 
         aria-hidden="true" 
         className="pointer-events-none absolute inset-0 flex items-center justify-center -z-10 mix-blend-screen"
       >
-        <div className="w-[850px] h-[400px] bg-gradient-to-r from-[#00f2fe]/20 via-[#7928ca]/25 to-[#ff0080]/20 blur-[150px] rounded-full animate-orb-2" />
+        <div className="w-[900px] h-[450px] bg-gradient-to-r from-[#4c1d95]/30 via-[#00f2fe]/20 to-[#db2777]/25 blur-[160px] rounded-full animate-volumetric-2" />
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 350, damping: 25 }}
@@ -26,7 +26,7 @@ export default function CtaBanner() {
             <span>Zero Friction • Immediate Access</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight sm:tracking-tighter leading-tight">
             Supercharge Your Writing Workflow Today.
           </h2>
 
@@ -38,11 +38,12 @@ export default function CtaBanner() {
             <motion.a
               href="#workspace"
               whileHover={{ scale: 1.04, y: -2 }}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 450, damping: 20 }}
-              className="w-full sm:w-auto relative group inline-flex items-center justify-center gap-2.5 px-9 py-4 text-base font-bold text-white rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(121,40,202,0.45)] hover:shadow-[0_0_55px_rgba(0,242,254,0.65)] transition-all"
+              className="w-full sm:w-auto relative group inline-flex items-center justify-center gap-2.5 px-9 py-4 text-base font-bold text-white rounded-2xl overflow-hidden shadow-[0_15px_45px_-10px_rgba(76,29,149,0.7),0_0_55px_rgba(0,242,254,0.45)] hover:shadow-[0_20px_55px_-10px_rgba(0,242,254,0.7),0_0_65px_rgba(219,39,119,0.5)] transition-all"
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-[#00f2fe] via-[#7928ca] to-[#ff0080]" />
+              <span className="absolute inset-0 bg-gradient-to-r from-[#00f2fe] via-[#7928ca] to-[#db2777]" />
+              <span className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
               <span className="relative z-10 flex items-center gap-2">
                 <span>Launch 3D Studio Free</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -51,10 +52,10 @@ export default function CtaBanner() {
 
             <motion.a
               href="#pricing"
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.025, y: -2 }}
+              whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 450, damping: 20 }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 text-sm font-semibold text-neutral-200 bg-neutral-900/90 hover:bg-neutral-800/90 border border-white/15 hover:border-white/30 rounded-2xl backdrop-blur-2xl transition-all shadow-md"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 text-sm font-semibold text-neutral-200 bg-[#09081d]/80 hover:bg-[#12102e]/85 border border-white/15 hover:border-white/35 rounded-2xl backdrop-blur-2xl transition-all shadow-[0_10px_30px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.18)]"
             >
               <Cpu className="w-4 h-4 text-cyan-400" />
               <span>Compare Pro Plans</span>

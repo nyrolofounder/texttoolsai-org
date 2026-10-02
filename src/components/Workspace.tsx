@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Sparkles, 
   SlidersHorizontal, 
@@ -11,7 +11,6 @@ import {
   Copy, 
   Check, 
   Download, 
-  RotateCcw, 
   Trash2, 
   ClipboardPaste, 
   Layers, 
@@ -151,12 +150,11 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
         particleCount: 50,
         spread: 60,
         origin: { y: 0.7, x: 0.7 },
-        colors: ["#00f2fe", "#00f5a0", "#7928ca", "#ff0080"],
+        colors: ["#00f2fe", "#00f5a0", "#7928ca", "#db2777"],
       });
 
       setTimeout(() => setCopied(false), 2500);
     } catch {
-      // Fallback for restricted clipboard environments
       try {
         const textarea = document.createElement("textarea");
         textarea.value = outputVal;
@@ -199,22 +197,22 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
   const getToolIcon = (name: string) => {
     switch (name) {
       case "Sparkles": return <Sparkles className="w-4 h-4 text-[#00f5a0]" />;
-      case "SlidersHorizontal": return <SlidersHorizontal className="w-4 h-4 text-[#9d4edd]" />;
+      case "SlidersHorizontal": return <SlidersHorizontal className="w-4 h-4 text-[#c084fc]" />;
       case "FileText": return <FileText className="w-4 h-4 text-[#00f2fe]" />;
       case "Search": return <Search className="w-4 h-4 text-[#ffb703]" />;
-      case "Stethoscope": return <Stethoscope className="w-4 h-4 text-[#ff0080]" />;
+      case "Stethoscope": return <Stethoscope className="w-4 h-4 text-[#db2777]" />;
       default: return <Sparkles className="w-4 h-4 text-[#00f2fe]" />;
     }
   };
 
   const getToolGlowColor = (id: string) => {
     switch (id) {
-      case "humanizer": return "rgba(0, 245, 160, 0.28)";
-      case "tone-shifter": return "rgba(157, 78, 221, 0.32)";
-      case "summarizer": return "rgba(0, 242, 254, 0.28)";
-      case "seo-generator": return "rgba(255, 183, 3, 0.28)";
-      case "grammar-doctor": return "rgba(255, 0, 128, 0.28)";
-      default: return "rgba(0, 242, 254, 0.28)";
+      case "humanizer": return "rgba(0, 245, 160, 0.35)";
+      case "tone-shifter": return "rgba(121, 40, 202, 0.4)";
+      case "summarizer": return "rgba(0, 242, 254, 0.35)";
+      case "seo-generator": return "rgba(255, 183, 3, 0.35)";
+      case "grammar-doctor": return "rgba(219, 39, 119, 0.38)";
+      default: return "rgba(0, 242, 254, 0.35)";
     }
   };
 
@@ -225,75 +223,79 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
   return (
     <section id="workspace" className="py-16 md:py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header with 3D depth */}
+        {/* Section Header with 3D Depth */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-white/[0.08]">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-cyan-400 mb-2">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
               <span>Interactive Neural Studio</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight sm:tracking-tighter">
               Test Drive the 5 Core Engines
             </h2>
-            <p className="text-neutral-300 text-sm sm:text-base mt-1 max-w-xl">
-              Switch engines, load curated presets, or paste your own raw content to see instantaneous neural transformation.
+            <p className="text-neutral-300 text-sm sm:text-base mt-1.5 max-w-xl">
+              Switch engines, load scenario presets, or paste your own raw content to see instantaneous neural transformation.
             </p>
           </div>
 
           <div className="mt-4 md:mt-0 flex items-center gap-3">
-            <span className="text-xs text-neutral-400 hidden sm:inline">Engine Status:</span>
-            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-neutral-900/90 border border-white/10 text-xs font-mono text-neutral-200 shadow-inner">
+            <span className="text-xs text-neutral-400 hidden sm:inline font-mono">Engine Status:</span>
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#09081a]/90 border border-white/15 text-xs font-mono text-neutral-200 shadow-inner backdrop-blur-xl">
               <span className="w-2 h-2 rounded-full bg-[#00f5a0] shadow-[0_0_8px_#00f5a0]" />
               <span>Tuned Weights Active</span>
               <span className="text-neutral-600">|</span>
-              <span className="text-cyan-400 font-bold">{latency}ms</span>
+              <span className="text-cyan-300 font-bold">{latency}ms</span>
             </div>
           </div>
         </div>
 
-        {/* 3D Studio Workspace Cockpit Container */}
+        {/* 3D Chamfered Studio Workspace Cockpit Container */}
         <div 
           style={{
-            boxShadow: `0 25px 65px -15px ${activeGlow}, 0 0 35px -10px ${activeGlow}`,
+            boxShadow: `0 35px 90px -20px ${activeGlow}, 0 0 50px -15px ${activeGlow}, inset 0 1px 0 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 0 rgba(0, 0, 0, 0.5)`,
           }}
-          className="relative rounded-3xl border border-white/15 bg-[#070707]/90 shadow-2xl overflow-hidden backdrop-blur-2xl transition-shadow duration-500"
+          className="relative rounded-3xl border border-white/20 bg-[#080816]/90 shadow-2xl overflow-hidden backdrop-blur-2xl transition-all duration-500"
         >
           {/* Top Specular Rim Reflection */}
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/50 via-violet-400/50 to-transparent" />
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/60 via-violet-400/60 via-pink-400/50 to-transparent" />
 
           {/* Top Tool Tabs Header */}
-          <div className="flex items-center justify-between border-b border-white/[0.08] bg-[#0c0c0c]/90 px-3 sm:px-5 py-3 overflow-x-auto no-scrollbar">
+          <div className="flex items-center justify-between border-b border-white/[0.08] bg-[#0c0c20]/90 px-3 sm:px-5 py-3 overflow-x-auto no-scrollbar">
             <div className="flex items-center space-x-2 min-w-max">
               {TOOLS.map((tool) => {
                 const isActive = activeToolId === tool.id;
                 return (
-                  <button
+                  <motion.button
                     key={tool.id}
+                    type="button"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: "spring", stiffness: 450, damping: 25 }}
                     onClick={() => onToolChange(tool.id)}
                     className={`relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
                       isActive
                         ? "text-white"
-                        : "text-neutral-400 hover:text-neutral-200 hover:bg-white/[0.04]"
+                        : "text-neutral-400 hover:text-neutral-200 hover:bg-white/[0.05]"
                     }`}
                   >
                     {isActive && (
                       <motion.div
                         layoutId="activeWorkspaceTab"
-                        className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/15 to-white/5 border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.08)]"
+                        className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/18 via-white/8 to-transparent border border-white/25 shadow-[0_0_25px_rgba(255,255,255,0.12),inset_0_1px_0_0_rgba(255,255,255,0.3)]"
                         transition={{ type: "spring", stiffness: 450, damping: 28 }}
                       />
                     )}
                     <span className="relative z-10">{getToolIcon(tool.icon)}</span>
                     <span className="relative z-10">{tool.name}</span>
-                    <span className="relative z-10 hidden lg:inline text-[10px] font-mono px-2 py-0.5 rounded-full bg-black/50 text-neutral-300 border border-white/10">
+                    <span className="relative z-10 hidden lg:inline text-[10px] font-mono px-2 py-0.5 rounded-full bg-black/60 text-neutral-300 border border-white/10">
                       {tool.badge}
                     </span>
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
 
-            {/* Quick Preset Selector with 3D Glass Styling */}
+            {/* Quick Preset Selector with Chamfered Glass Styling */}
             <div className="relative ml-4 min-w-max">
               <div className="flex items-center gap-2">
                 <span className="text-xs text-neutral-400 hidden xl:inline font-mono">Preset:</span>
@@ -310,7 +312,7 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
                       setLatency(result.latencyMs);
                     }
                   }}
-                  className="bg-neutral-900 border border-white/15 hover:border-cyan-400/40 text-neutral-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer transition-colors shadow-inner"
+                  className="bg-[#100f24] border border-white/15 hover:border-cyan-400/50 text-neutral-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer transition-all shadow-inner"
                 >
                   <option value="" disabled>
                     Load Scenario Preset...
@@ -326,7 +328,7 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
           </div>
 
           {/* Contextual Options Bar for Active Tool */}
-          <div className="px-5 py-3 bg-neutral-950/80 border-b border-white/[0.06] flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="px-5 py-3 bg-[#070617]/90 border-b border-white/[0.08] flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex flex-wrap items-center gap-3">
               <span className="text-neutral-400 font-mono flex items-center gap-1.5 font-medium">
                 <SlidersHorizontal className="w-3.5 h-3.5 text-cyan-400" />
@@ -352,7 +354,7 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
                           setLatency(result.latencyMs);
                         }
                       }}
-                      className="bg-neutral-900 border border-white/10 hover:border-white/20 text-neutral-200 text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:border-cyan-500 cursor-pointer"
+                      className="bg-[#121029] border border-white/15 hover:border-white/30 text-neutral-200 text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:border-cyan-500 cursor-pointer shadow-sm"
                     >
                       {opt.choices.map((c) => (
                         <option key={c.value} value={c.value}>
@@ -380,7 +382,7 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
           {/* Dual-Pane Editor Area */}
           <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/[0.08]">
             {/* Left Column: Input Box */}
-            <div className="flex flex-col bg-[#050505]/95 p-5 sm:p-6">
+            <div className="flex flex-col bg-[#050512]/95 p-5 sm:p-6">
               {/* Input Header & Controls */}
               <div className="flex items-center justify-between mb-3.5">
                 <div className="flex items-center gap-2">
@@ -393,60 +395,65 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
+                  <motion.button
                     type="button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={handlePaste}
                     title="Paste from clipboard"
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-neutral-300 hover:text-white rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all border border-white/5"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-neutral-300 hover:text-white rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all border border-white/10"
                   >
                     <ClipboardPaste className="w-3.5 h-3.5 text-cyan-400" />
                     <span>Paste</span>
-                  </button>
+                  </motion.button>
 
-                  <button
+                  <motion.button
                     type="button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => {
                       setInputVal("");
                       setOutputVal("");
                     }}
                     title="Clear text"
-                    className="flex items-center gap-1 p-1.5 text-xs text-neutral-400 hover:text-rose-400 rounded-lg bg-white/[0.05] hover:bg-rose-500/10 transition-all border border-white/5"
+                    className="flex items-center gap-1 p-1.5 text-xs text-neutral-400 hover:text-rose-400 rounded-lg bg-white/[0.05] hover:bg-rose-500/10 transition-all border border-white/10"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
-              {/* Textarea with 3D inset styling */}
-              <div className="relative flex-1 min-h-[280px] sm:min-h-[340px] rounded-2xl bg-black/40 border border-white/5 p-4 shadow-inner">
+              {/* Textarea with Chamfered Glass Inset */}
+              <div className="relative flex-1 min-h-[280px] sm:min-h-[340px] rounded-2xl bg-[#03030a]/80 border border-white/10 p-4 shadow-[inset_0_2px_8px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.06)]">
                 <textarea
                   value={inputVal}
                   onChange={(e) => setInputVal(e.target.value)}
-                  placeholder={`Paste your raw text here or load a sample preset above to see ${currentTool.name} in action...`}
+                  placeholder={`Paste your raw text here or load a sample scenario preset above to see ${currentTool.name} in action...`}
                   className="w-full h-full min-h-[260px] sm:min-h-[310px] bg-transparent text-sm text-neutral-200 placeholder-neutral-600 focus:outline-none resize-none font-sans leading-relaxed selection:bg-cyan-500/30 selection:text-white"
                 />
               </div>
 
-              {/* Input Footer & Glowing Transform Button */}
+              {/* Input Footer & Glowing Transform Button with Spring Physics */}
               <div className="pt-4 mt-3 border-t border-white/[0.06] flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs text-neutral-400">
                   <span className="hidden sm:inline">Shortcut:</span>
-                  <kbd className="px-2 py-0.5 rounded-md bg-neutral-900 border border-white/10 text-neutral-300 font-mono text-[11px] shadow-inner">
+                  <kbd className="px-2 py-0.5 rounded-md bg-[#0e0d22] border border-white/15 text-neutral-300 font-mono text-[11px] shadow-inner">
                     ⌘ + Enter
                   </kbd>
                 </div>
 
                 <motion.button
                   type="button"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.035, y: -1 }}
+                  whileTap={{ scale: 0.96 }}
                   transition={{ type: "spring", stiffness: 450, damping: 20 }}
                   onClick={handleTransform}
                   disabled={isProcessing || !inputVal.trim()}
-                  className="relative group inline-flex items-center gap-2.5 px-6 py-3 rounded-xl font-bold text-sm text-white overflow-hidden shadow-[0_0_30px_rgba(0,242,254,0.35)] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  className="relative group inline-flex items-center gap-2.5 px-6 py-3 rounded-xl font-bold text-sm text-white overflow-hidden shadow-[0_10px_35px_rgba(0,242,254,0.35)] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >
-                  <span className="absolute inset-0 bg-gradient-to-r from-[#00f2fe] via-[#7928ca] to-[#ff0080] group-hover:opacity-100 opacity-90 transition-opacity" />
-                  <span className="relative z-10 flex items-center gap-2">
+                  <span className="absolute inset-0 bg-gradient-to-r from-[#00f2fe] via-[#7928ca] to-[#db2777] group-hover:opacity-100 opacity-95 transition-opacity" />
+                  <span className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+                  <span className="relative z-10 flex items-center gap-2 tracking-tight">
                     {isProcessing ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -464,7 +471,7 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
             </div>
 
             {/* Right Column: Output Box */}
-            <div className="flex flex-col bg-[#070707]/95 p-5 sm:p-6">
+            <div className="flex flex-col bg-[#070716]/95 p-5 sm:p-6">
               {/* Output Header & View Mode Switcher */}
               <div className="flex items-center justify-between mb-3.5">
                 <div className="flex items-center gap-2">
@@ -480,27 +487,31 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
                   )}
                 </div>
 
-                {/* Actions: Copy, Diff, Download */}
+                {/* Actions: Diff, Copy, Download */}
                 <div className="flex items-center gap-2">
-                  <button
+                  <motion.button
                     type="button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => setViewMode(viewMode === "clean" ? "diff" : "clean")}
                     className={`px-3 py-1.5 text-xs rounded-lg transition-all font-medium border ${
                       viewMode === "diff"
                         ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-[0_0_15px_rgba(0,242,254,0.2)]"
-                        : "text-neutral-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border-white/5"
+                        : "text-neutral-400 hover:text-white bg-white/[0.05] hover:bg-white/[0.1] border-white/10"
                     }`}
                   >
                     Diff View
-                  </button>
+                  </motion.button>
 
-                  <button
+                  <motion.button
                     type="button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={handleCopy}
                     className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs rounded-lg font-semibold transition-all border ${
                       copied
                         ? "bg-emerald-500/20 text-[#00f5a0] border-emerald-500/40 shadow-[0_0_20px_rgba(0,245,160,0.35)]"
-                        : "bg-white/[0.08] hover:bg-white/[0.14] text-neutral-200 hover:text-white border-white/10"
+                        : "bg-white/[0.08] hover:bg-white/[0.15] text-neutral-200 hover:text-white border-white/15"
                     }`}
                   >
                     {copied ? (
@@ -514,21 +525,23 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
                         <span>Copy</span>
                       </>
                     )}
-                  </button>
+                  </motion.button>
 
-                  <button
+                  <motion.button
                     type="button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={handleDownload}
                     title="Download text file"
-                    className="p-1.5 text-neutral-400 hover:text-white rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all border border-white/5"
+                    className="p-1.5 text-neutral-400 hover:text-white rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all border border-white/10"
                   >
                     <Download className="w-3.5 h-3.5" />
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
-              {/* Output Content Container with 3D depth */}
-              <div className="relative flex-1 min-h-[280px] sm:min-h-[340px] rounded-2xl bg-black/50 p-5 border border-white/[0.06] overflow-y-auto shadow-inner">
+              {/* Output Content Container with 3D Depth */}
+              <div className="relative flex-1 min-h-[280px] sm:min-h-[340px] rounded-2xl bg-[#04040d]/80 p-5 border border-white/10 overflow-y-auto shadow-[inset_0_2px_8px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.06)]">
                 {isProcessing ? (
                   <div className="flex flex-col items-center justify-center h-full min-h-[240px] text-center space-y-4">
                     <div className="relative w-10 h-10">
@@ -571,32 +584,32 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
                 )}
               </div>
 
-              {/* Output Analytics Strip with Glowing Numbers */}
+              {/* Output Analytics Strip with Luminous Numbers */}
               <div className="pt-4 mt-3 border-t border-white/[0.06] grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] shadow-sm">
                   <div className="text-[10px] text-neutral-400 font-mono">Bypass Score</div>
                   <div className="text-xs font-bold text-[#00f5a0] font-mono mt-0.5">
                     {currentMetrics.humanScore}% Human
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] shadow-sm">
                   <div className="text-[10px] text-neutral-400 font-mono">Word Delta</div>
-                  <div className="text-xs font-bold text-cyan-400 font-mono mt-0.5">
+                  <div className="text-xs font-bold text-cyan-300 font-mono mt-0.5">
                     {currentMetrics.wordDeltaPct > 0 ? `+${currentMetrics.wordDeltaPct}%` : `${currentMetrics.wordDeltaPct}%`}
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] shadow-sm">
                   <div className="text-[10px] text-neutral-400 font-mono">Readability</div>
-                  <div className="text-xs font-bold text-violet-400 font-mono mt-0.5">
+                  <div className="text-xs font-bold text-violet-300 font-mono mt-0.5">
                     {currentMetrics.readabilityGrade}
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] shadow-sm">
                   <div className="text-[10px] text-neutral-400 font-mono">Execution</div>
-                  <div className="text-xs font-bold text-amber-400 font-mono mt-0.5">
+                  <div className="text-xs font-bold text-amber-300 font-mono mt-0.5">
                     {latency}ms (p95)
                   </div>
                 </div>
@@ -607,37 +620,37 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
 
         {/* Feature Highlights under Workspace Wrapped in 3D TiltCards */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
-          <TiltCard glowColor="emerald" maxTilt={8} scaleOnHover={1.02}>
-            <div className="p-4 rounded-2xl bg-neutral-900/60 border border-white/10 backdrop-blur-xl flex items-center gap-3.5 h-full">
+          <TiltCard glowColor="emerald" maxTilt={8} scaleOnHover={1.025}>
+            <div className="p-4 rounded-2xl bg-[#0a091d]/70 border border-white/10 backdrop-blur-2xl flex items-center gap-3.5 h-full">
               <div className="w-10 h-10 rounded-xl bg-[#00f5a0]/10 border border-[#00f5a0]/25 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(0,245,160,0.2)]">
                 <ShieldCheck className="w-5 h-5 text-[#00f5a0]" />
               </div>
               <div>
-                <div className="text-xs font-bold text-white">Zero Retention Architecture</div>
+                <div className="text-xs font-bold text-white tracking-tight">Zero Retention Architecture</div>
                 <div className="text-[11px] text-neutral-400 mt-0.5">In-memory execution. Never trained on.</div>
               </div>
             </div>
           </TiltCard>
 
-          <TiltCard glowColor="cyan" maxTilt={8} scaleOnHover={1.02}>
-            <div className="p-4 rounded-2xl bg-neutral-900/60 border border-white/10 backdrop-blur-xl flex items-center gap-3.5 h-full">
+          <TiltCard glowColor="cyan" maxTilt={8} scaleOnHover={1.025}>
+            <div className="p-4 rounded-2xl bg-[#0a091d]/70 border border-white/10 backdrop-blur-2xl flex items-center gap-3.5 h-full">
               <div className="w-10 h-10 rounded-xl bg-[#00f2fe]/10 border border-[#00f2fe]/25 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(0,242,254,0.2)]">
                 <Zap className="w-5 h-5 text-cyan-400" />
               </div>
               <div>
-                <div className="text-xs font-bold text-white">Sub-200ms Edge Inference</div>
+                <div className="text-xs font-bold text-white tracking-tight">Sub-200ms Edge Inference</div>
                 <div className="text-[11px] text-neutral-400 mt-0.5">Multi-region global edge execution.</div>
               </div>
             </div>
           </TiltCard>
 
-          <TiltCard glowColor="violet" maxTilt={8} scaleOnHover={1.02}>
-            <div className="p-4 rounded-2xl bg-neutral-900/60 border border-white/10 backdrop-blur-xl flex items-center gap-3.5 h-full">
+          <TiltCard glowColor="violet" maxTilt={8} scaleOnHover={1.025}>
+            <div className="p-4 rounded-2xl bg-[#0a091d]/70 border border-white/10 backdrop-blur-2xl flex items-center gap-3.5 h-full">
               <div className="w-10 h-10 rounded-xl bg-[#7928ca]/15 border border-[#7928ca]/30 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(121,40,202,0.25)]">
                 <Layers className="w-5 h-5 text-violet-400" />
               </div>
               <div>
-                <div className="text-xs font-bold text-white">Instant Multi-Format Export</div>
+                <div className="text-xs font-bold text-white tracking-tight">Instant Multi-Format Export</div>
                 <div className="text-[11px] text-neutral-400 mt-0.5">One-click copy, diffs, and raw export.</div>
               </div>
             </div>
