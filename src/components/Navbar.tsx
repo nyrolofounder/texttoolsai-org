@@ -144,6 +144,12 @@ export default function Navbar() {
               >
                 Benchmarks
               </a>
+              <Link
+                href="/docs"
+                className="px-3.5 py-1.5 text-sm text-neutral-300 hover:text-white rounded-lg hover:bg-white/[0.06] transition-all font-medium"
+              >
+                Docs
+              </Link>
               <a
                 href="#pricing"
                 className="px-3.5 py-1.5 text-sm text-neutral-300 hover:text-white rounded-lg hover:bg-white/[0.06] transition-all font-medium"
@@ -161,11 +167,19 @@ export default function Navbar() {
 
           {/* Right Action buttons */}
           <div className="hidden sm:flex items-center gap-3">
-            <div className="flex items-center gap-1.5 text-xs text-neutral-400 bg-neutral-900/80 border border-white/10 px-3 py-1.5 rounded-lg shadow-inner">
-              <Command className="w-3 h-3 text-cyan-400" />
-              <span className="font-mono text-neutral-200">Enter</span>
-              <span className="text-neutral-500">synthesize</span>
-            </div>
+            <Link
+              href="/dashboard"
+              className="px-3.5 py-1.5 text-sm text-neutral-300 hover:text-white rounded-lg hover:bg-white/[0.06] transition-all font-medium"
+            >
+              Dashboard
+            </Link>
+
+            <Link
+              href="/login"
+              className="px-3.5 py-1.5 text-sm text-neutral-300 hover:text-white rounded-lg hover:bg-white/[0.06] transition-all font-medium"
+            >
+              Sign In
+            </Link>
 
             <a
               href="#workspace"
@@ -221,6 +235,27 @@ export default function Navbar() {
           </div>
 
           <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
+            <Link
+              href="/dashboard"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 text-sm text-cyan-300 font-semibold hover:text-white"
+            >
+              User Dashboard
+            </Link>
+            <Link
+              href="/docs"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 text-sm text-neutral-300 hover:text-white"
+            >
+              Developer Docs
+            </Link>
+            <Link
+              href="/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 text-sm text-neutral-300 hover:text-white"
+            >
+              Sign In / Sign Up
+            </Link>
             <a
               href="#pricing"
               onClick={() => setMobileMenuOpen(false)}

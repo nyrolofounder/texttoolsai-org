@@ -94,29 +94,29 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <a href="#features" className="hover:text-white transition-colors">
-                  Edge Inference Speed
-                </a>
+                <Link href="/dashboard" className="hover:text-white transition-colors">
+                  User Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link href="/settings/billing" className="hover:text-white transition-colors">
+                  Billing & Quotas
+                </Link>
+              </li>
+              <li>
+                <Link href="/docs" className="hover:text-white transition-colors">
+                  Developer Docs & API
+                </Link>
               </li>
               <li>
                 <a href="#features" className="hover:text-white transition-colors">
-                  Zero-Retention Privacy
+                  Edge Benchmarks
                 </a>
               </li>
               <li>
                 <a href="#pricing" className="hover:text-white transition-colors">
-                  Pricing & Tiers
+                  Pricing Plans
                 </a>
-              </li>
-              <li>
-                <a href="#faq" className="hover:text-white transition-colors">
-                  FAQ & Support
-                </a>
-              </li>
-              <li>
-                <span className="text-neutral-400 cursor-not-allowed">
-                  REST API (v1 Beta)
-                </span>
               </li>
             </ul>
           </div>
@@ -128,29 +128,29 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <span className="hover:text-white transition-colors cursor-pointer">
-                  Privacy Policy
-                </span>
+                <Link href="/privacy" className="hover:text-white transition-colors">
+                  Zero-Retention Privacy
+                </Link>
               </li>
               <li>
-                <span className="hover:text-white transition-colors cursor-pointer">
+                <Link href="/terms" className="hover:text-white transition-colors">
                   Terms of Service
-                </span>
+                </Link>
               </li>
               <li>
-                <span className="hover:text-white transition-colors cursor-pointer">
-                  Security Whitepaper
-                </span>
-              </li>
-              <li>
-                <span className="hover:text-white transition-colors cursor-pointer">
+                <Link href="/privacy" className="hover:text-white transition-colors">
                   GDPR & CCPA Compliance
-                </span>
+                </Link>
               </li>
               <li>
-                <span className="hover:text-white transition-colors cursor-pointer">
-                  Cookie Preferences
-                </span>
+                <Link href="/docs" className="hover:text-white transition-colors">
+                  Security Architecture
+                </Link>
+              </li>
+              <li>
+                <a href="mailto:support@texttoolsai.org" className="hover:text-white transition-colors">
+                  Compliance Contact
+                </a>
               </li>
             </ul>
           </div>

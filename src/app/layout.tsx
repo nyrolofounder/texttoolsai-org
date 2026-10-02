@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import StructuredData from "@/components/StructuredData";
+import { AuthProvider } from "@/lib/auth-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -83,8 +84,8 @@ export default function RootLayout({
       <head>
         <StructuredData />
       </head>
-      <body className="min-h-screen bg-[#030303] text-[#ededed] selection:bg-cyan-500/30 selection:text-white flex flex-col font-sans">
-        {children}
+      <body className="min-h-screen bg-[#05050a] text-[#ededed] selection:bg-cyan-500/30 selection:text-white flex flex-col font-sans">
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

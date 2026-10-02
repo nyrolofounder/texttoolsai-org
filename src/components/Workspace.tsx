@@ -21,6 +21,7 @@ import {
 import confetti from "canvas-confetti";
 import { TOOLS, ToolConfig } from "@/data/tools";
 import { transformText, TransformResult } from "@/lib/transformer";
+import { saveHistoryItem } from "@/lib/supabase";
 import TiltCard from "./TiltCard";
 
 interface WorkspaceProps {
@@ -109,6 +110,25 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
           setOutputVal(fullText);
           setIsProcessing(false);
           clearInterval(streamTimer);
+
+          // Persist generation to history vault
+          try {
+            saveHistoryItem({
+              toolId: currentTool.id,
+              toolName: currentTool.name,
+              inputSnippet: inputVal.slice(0, 120),
+              outputSnippet: fullText.slice(0, 120),
+              fullInput: inputVal,
+              fullOutput: fullText,
+              wordsIn: result.stats.wordsIn,
+              wordsOut: result.stats.wordsOut,
+              wordDeltaPct: result.stats.wordDeltaPct,
+              humanScore: result.stats.humanScore,
+              latencyMs: result.latencyMs,
+            });
+          } catch (err) {
+            console.error("Could not persist generation", err);
+          }
         } else {
           setOutputVal(fullText.slice(0, currentIndex));
         }
