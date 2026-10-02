@@ -107,7 +107,7 @@ export default function SignupPage() {
       <div className="absolute top-6 left-6 z-20">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#0a091e]/80 border border-white/10 text-xs font-medium text-neutral-300 hover:text-white hover:border-white/25 backdrop-blur-xl transition-all shadow-sm"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-medium text-white/80 hover:text-white backdrop-blur-xl transition-all shadow-sm active:scale-95"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to texttoolsai.org</span>
@@ -119,17 +119,17 @@ export default function SignupPage() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ type: "spring", stiffness: 400, damping: 26 }}
         style={{
-          boxShadow: "0 35px 90px -25px rgba(0, 0, 0, 0.95), 0 0 60px -20px rgba(76, 29, 149, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 0 rgba(0, 0, 0, 0.5)",
+          boxShadow: "0 35px 90px -25px rgba(0, 0, 0, 0.95), 0 0 60px -20px rgba(76, 29, 149, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.16)",
         }}
-        className="w-full max-w-md rounded-3xl border border-white/20 bg-[#09081e]/90 p-8 sm:p-10 backdrop-blur-2xl relative z-10 my-12"
+        className="w-full max-w-md rounded-2xl border border-white/10 bg-[#09090b]/80 p-8 sm:p-10 backdrop-blur-xl relative z-10 my-12"
       >
         {/* Top Specular Edge Beam */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/60 via-violet-400/60 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 via-violet-400/40 to-transparent" />
 
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-neutral-900 to-black border border-white/20 shadow-[0_0_20px_rgba(0,242,254,0.3)] mb-4">
-            <span className="font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00f2fe] via-[#7928ca] to-[#ff0080] text-lg">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/[0.06] border border-white/15 shadow-[0_0_20px_rgba(0,242,254,0.2)] mb-4">
+            <span className="font-mono font-bold text-white text-base">
               TT
             </span>
           </div>
@@ -137,7 +137,7 @@ export default function SignupPage() {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight sm:tracking-tighter">
             Create Free Account
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-400 mt-1.5">
+          <p className="text-xs sm:text-sm text-white/60 mt-1.5">
             Start transforming text with 5,000 free monthly words.
           </p>
         </div>
@@ -157,12 +157,12 @@ export default function SignupPage() {
         {/* Google OAuth Button */}
         <motion.button
           type="button"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.99 }}
           transition={{ type: "spring", stiffness: 450, damping: 20 }}
           onClick={handleGoogleSignUp}
           disabled={isLoading}
-          className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl font-semibold text-xs sm:text-sm text-white bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 hover:border-white/30 backdrop-blur-xl transition-all shadow-sm"
+          className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl font-semibold text-xs sm:text-sm text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-white/20 backdrop-blur-xl transition-all shadow-sm"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
@@ -303,15 +303,14 @@ export default function SignupPage() {
           {/* Submit Button */}
           <motion.button
             type="submit"
-            whileHover={{ scale: 1.025, y: -1 }}
-            whileTap={{ scale: 0.97 }}
+            whileHover={{ scale: 1.015, y: -1 }}
+            whileTap={{ scale: 0.985 }}
             transition={{ type: "spring", stiffness: 450, damping: 20 }}
             disabled={isLoading}
-            className="w-full relative group inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-sm text-white overflow-hidden shadow-[0_10px_30px_rgba(76,29,149,0.5)] mt-2 transition-all"
+            className="w-full relative group inline-flex items-center justify-center p-[1px] rounded-xl overflow-hidden font-bold text-sm tracking-tight transition-all active:scale-95 shadow-[0_0_25px_rgba(0,242,254,0.3)] hover:shadow-[0_0_35px_rgba(0,242,254,0.5)] mt-2"
           >
-            <span className="absolute inset-0 bg-gradient-to-r from-[#00f2fe] via-[#7928ca] to-[#db2777]" />
-            <span className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-            <span className="relative z-10 flex items-center gap-2">
+            <span className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500 group-hover:opacity-100 opacity-90 transition-opacity" />
+            <span className="relative w-full py-3 px-4 rounded-[11px] bg-[#09090b]/90 group-hover:bg-[#09090b]/75 text-white flex items-center justify-center gap-2 backdrop-blur-xl transition-all">
               <span>{isLoading ? "Creating Account..." : "Create Account Free"}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </span>
@@ -323,7 +322,7 @@ export default function SignupPage() {
           <button
             type="button"
             onClick={handleDemoAccess}
-            className="w-full py-2.5 px-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-medium flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(0,242,254,0.15)]"
+            className="w-full py-2.5 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-cyan-300 text-xs font-mono font-medium flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95"
           >
             <Zap className="w-3.5 h-3.5" />
             <span>Instant Demo Preview (Explore Dashboard)</span>
@@ -331,9 +330,9 @@ export default function SignupPage() {
         </div>
 
         {/* Footer Link */}
-        <p className="text-center text-xs text-neutral-400 mt-6">
+        <p className="text-center text-xs text-white/60 mt-6">
           Already have an account?{" "}
-          <Link href="/login" className="text-cyan-400 hover:text-cyan-300 font-semibold underline underline-offset-4">
+          <Link href="/login" className="text-cyan-300 hover:text-cyan-200 font-semibold underline underline-offset-4">
             Sign in
           </Link>
         </p>

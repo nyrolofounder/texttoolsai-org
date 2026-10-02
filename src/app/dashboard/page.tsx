@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
   Sparkles, 
   SlidersHorizontal, 
@@ -20,13 +20,11 @@ import {
   ShieldCheck, 
   Cpu, 
   LogOut, 
-  Settings, 
   CreditCard,
-  Layers,
   ArrowUpRight,
-  TrendingUp,
   Clock,
-  Filter
+  Layers,
+  Activity
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useAuth } from "@/lib/auth-context";
@@ -42,7 +40,7 @@ import TiltCard from "@/components/TiltCard";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading, signOut, upgradeToPro } = useAuth();
+  const { user, signOut } = useAuth();
 
   const [history, setHistory] = useState<GenerationHistoryItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -90,13 +88,13 @@ export default function DashboardPage() {
       setCopiedId(id);
 
       confetti({
-        particleCount: 40,
+        particleCount: 35,
         spread: 50,
         origin: { y: 0.6, x: 0.5 },
         colors: ["#00f2fe", "#00f5a0", "#7928ca", "#db2777"],
       });
 
-      setTimeout(() => setCopiedId(null), 2200);
+      setTimeout(() => setCopiedId(null), 2000);
     } catch (err) {
       console.error("Failed to copy", err);
     }
@@ -134,17 +132,6 @@ export default function DashboardPage() {
     }
   };
 
-  const getToolGlow = (toolId: string) => {
-    switch (toolId) {
-      case "humanizer": return "rgba(0, 245, 160, 0.35)";
-      case "tone-shifter": return "rgba(121, 40, 202, 0.35)";
-      case "summarizer": return "rgba(0, 242, 254, 0.35)";
-      case "seo-generator": return "rgba(255, 183, 3, 0.35)";
-      case "grammar-doctor": return "rgba(219, 39, 119, 0.35)";
-      default: return "rgba(0, 242, 254, 0.35)";
-    }
-  };
-
   const currentPlan = user?.plan || "free";
   const wordsUsed = user?.wordsUsedThisMonth || 3420;
   const wordLimit = currentPlan === "pro" ? "Unlimited" : (user?.wordLimit || 5000).toLocaleString();
@@ -155,35 +142,35 @@ export default function DashboardPage() {
       {/* 3D Volumetric Canvas */}
       <NeonBackgroundOrbs />
 
-      {/* Dashboard Top Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-[#05050a]/85 backdrop-blur-2xl border-b border-white/10 shadow-[0_15px_40px_rgba(0,0,0,0.9)]">
+      {/* Enterprise Navigation Header */}
+      <header className="sticky top-0 z-40 bg-[#05050a]/75 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center gap-4">
               <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-neutral-900 to-black border border-white/20 flex items-center justify-center shadow-inner group-hover:border-cyan-400/60 transition-all duration-300">
-                  <span className="font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00f2fe] via-[#7928ca] to-[#ff0080] text-sm">
+                <div className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/15 flex items-center justify-center backdrop-blur-md group-hover:border-cyan-400/50 transition-all duration-200 shadow-sm">
+                  <span className="font-mono font-bold text-white text-sm">
                     TT
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="font-bold text-white tracking-tight text-base">
-                    texttools<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400">ai</span>
+                    texttools<span className="text-white/60">ai</span>
                   </span>
-                  <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/25">
                     dashboard
                   </span>
                 </div>
               </Link>
 
-              <span className="text-neutral-600 hidden sm:inline">|</span>
+              <span className="text-white/20 hidden sm:inline">/</span>
 
               <Link
                 href="/#workspace"
-                className="hidden sm:inline-flex items-center gap-1.5 text-xs text-neutral-300 hover:text-cyan-300 transition-colors font-medium"
+                className="hidden sm:inline-flex items-center gap-1.5 text-xs text-white/70 hover:text-white transition-colors font-medium"
               >
-                <span>Interactive Studio</span>
+                <span>Studio Cockpit</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -192,14 +179,14 @@ export default function DashboardPage() {
             <div className="flex items-center gap-3">
               <Link
                 href="/settings/billing"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-medium text-neutral-300 hover:text-white transition-all shadow-sm"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-medium text-white/80 hover:text-white transition-all shadow-sm"
               >
                 <CreditCard className="w-3.5 h-3.5 text-cyan-400" />
                 <span className="hidden md:inline">Billing</span>
                 <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono uppercase font-bold ${
                   currentPlan === "pro"
                     ? "bg-violet-500/20 text-violet-300 border border-violet-500/30"
-                    : "bg-neutral-800 text-neutral-400"
+                    : "bg-white/10 text-white/70"
                 }`}>
                   {currentPlan}
                 </span>
@@ -210,10 +197,10 @@ export default function DashboardPage() {
                   {user?.fullName ? user.fullName.slice(0, 2).toUpperCase() : "CR"}
                 </div>
                 <div className="hidden lg:block text-left">
-                  <div className="text-xs font-bold text-white leading-tight">
+                  <div className="text-xs font-bold text-white tracking-tight leading-tight">
                     {user?.fullName || "Creator User"}
                   </div>
-                  <div className="text-[10px] text-neutral-400 font-mono">
+                  <div className="text-[10px] text-white/50 font-mono">
                     {user?.email || "creator@texttoolsai.org"}
                   </div>
                 </div>
@@ -225,7 +212,7 @@ export default function DashboardPage() {
                     router.push("/login");
                   }}
                   title="Sign out"
-                  className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors ml-1"
+                  className="p-1.5 rounded-lg text-white/50 hover:text-rose-400 hover:bg-rose-500/10 transition-colors ml-1"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -236,53 +223,63 @@ export default function DashboardPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        {/* Top Welcome & Notification Bar */}
+        {/* Top Header & Launch Studio Action */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight sm:tracking-tighter">
-              Welcome back, {user?.fullName?.split(" ")[0] || "Creator"} 👋
+              Executive Workspace
             </h1>
-            <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-              Your neural transformation vault, telemetry benchmarks, and quota tracking.
+            <p className="text-xs sm:text-sm text-white/60 mt-1">
+              Neural transformations, telemetry benchmarks, and quota tracking.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <Link
               href="/#workspace"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-gradient-to-r from-[#00f2fe] via-[#7928ca] to-[#db2777] shadow-[0_0_25px_rgba(0,242,254,0.35)] hover:shadow-[0_0_35px_rgba(0,242,254,0.5)] transition-all"
+              className="relative group inline-flex items-center justify-center p-[1px] rounded-xl overflow-hidden font-semibold text-xs sm:text-sm tracking-tight transition-all active:scale-[0.98]"
             >
-              <Zap className="w-4 h-4 fill-white" />
-              <span>Launch Studio Cockpit</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500 group-hover:opacity-100 opacity-90 transition-opacity" />
+              <span className="relative px-5 py-2.5 rounded-[11px] bg-[#09090b]/90 group-hover:bg-[#09090b]/75 text-white flex items-center gap-2 backdrop-blur-xl transition-all shadow-[0_0_20px_rgba(0,242,254,0.25)] group-hover:shadow-[0_0_30px_rgba(0,242,254,0.45)]">
+                <Zap className="w-4 h-4 fill-cyan-400 text-cyan-400" />
+                <span>Launch Studio Cockpit</span>
+              </span>
             </Link>
           </div>
         </div>
 
-        {/* 4 Stat Telemetry Meters in Chamfered 3D TiltCards */}
+        {/* 4 Telemetry Metric Cards in High-Definition Chamfered Glass */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
           {/* Card 1: Words Usage Meter */}
           <TiltCard glowColor="cyan" maxTilt={6}>
-            <div className="p-5 rounded-2xl bg-[#0a091e]/80 border border-white/12 backdrop-blur-2xl h-full flex flex-col justify-between shadow-xl">
+            <div 
+              style={{
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.14)",
+              }}
+              className="p-6 rounded-2xl bg-[#09090b]/80 border border-white/10 backdrop-blur-xl h-full flex flex-col justify-between"
+            >
               <div>
-                <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
+                <div className="flex items-center justify-between text-xs text-white/60 font-mono">
                   <span>Monthly Quota</span>
-                  <span className="text-cyan-300 font-bold">{usagePct}%</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/25">
+                    {usagePct}%
+                  </span>
                 </div>
-                <div className="text-2xl font-extrabold text-white font-mono mt-2">
-                  {wordsUsed.toLocaleString()} <span className="text-xs text-neutral-400 font-normal">/ {wordLimit}</span>
+                <div className="text-3xl font-extrabold text-white font-mono mt-3 tracking-tight">
+                  {wordsUsed.toLocaleString()} <span className="text-xs text-white/50 font-normal">/ {wordLimit}</span>
                 </div>
                 {/* Visual Progress Bar */}
-                <div className="w-full h-2 rounded-full bg-white/10 mt-3 overflow-hidden">
+                <div className="w-full h-1.5 rounded-full bg-white/10 mt-3.5 overflow-hidden">
                   <div
                     style={{ width: `${currentPlan === "pro" ? 100 : usagePct}%` }}
-                    className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 shadow-[0_0_10px_#00f2fe]"
+                    className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500"
                   />
                 </div>
               </div>
-              <div className="mt-4 pt-3 border-t border-white/[0.08] flex items-center justify-between text-[11px] text-neutral-400">
-                <span>Resets in 18 days</span>
+              <div className="mt-5 pt-3.5 border-t border-white/[0.08] flex items-center justify-between text-[11px] text-white/60">
+                <span>Cycle resets in 18 days</span>
                 {currentPlan === "free" && (
-                  <Link href="/settings/billing" className="text-cyan-400 hover:underline font-semibold">
+                  <Link href="/settings/billing" className="text-cyan-400 hover:text-cyan-300 font-semibold tracking-tight">
                     Upgrade →
                   </Link>
                 )}
@@ -292,20 +289,27 @@ export default function DashboardPage() {
 
           {/* Card 2: AI Bypass Rate */}
           <TiltCard glowColor="emerald" maxTilt={6}>
-            <div className="p-5 rounded-2xl bg-[#0a091e]/80 border border-white/12 backdrop-blur-2xl h-full flex flex-col justify-between shadow-xl">
+            <div 
+              style={{
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.14)",
+              }}
+              className="p-6 rounded-2xl bg-[#09090b]/80 border border-white/10 backdrop-blur-xl h-full flex flex-col justify-between"
+            >
               <div>
-                <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
+                <div className="flex items-center justify-between text-xs text-white/60 font-mono">
                   <span>Detection Bypass</span>
-                  <span className="w-2 h-2 rounded-full bg-[#00f5a0] animate-pulse shadow-[0_0_8px_#00f5a0]" />
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-[#00f5a0] border border-emerald-500/30">
+                    Verified
+                  </span>
                 </div>
-                <div className="text-2xl font-extrabold text-[#00f5a0] font-mono mt-2">
+                <div className="text-3xl font-extrabold text-[#00f5a0] font-mono mt-3 tracking-tight">
                   99.4%
                 </div>
-                <p className="text-xs text-neutral-300 mt-1">
+                <p className="text-xs text-white/70 mt-1.5 leading-relaxed">
                   Average pass rate against Turnitin & GPTZero
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-white/[0.08] text-[11px] font-mono text-neutral-400 flex items-center gap-1.5">
+              <div className="mt-5 pt-3.5 border-t border-white/[0.08] text-[11px] font-mono text-white/60 flex items-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Zero Detection Incidents</span>
               </div>
@@ -314,21 +318,28 @@ export default function DashboardPage() {
 
           {/* Card 3: Average Latency */}
           <TiltCard glowColor="violet" maxTilt={6}>
-            <div className="p-5 rounded-2xl bg-[#0a091e]/80 border border-white/12 backdrop-blur-2xl h-full flex flex-col justify-between shadow-xl">
+            <div 
+              style={{
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.14)",
+              }}
+              className="p-6 rounded-2xl bg-[#09090b]/80 border border-white/10 backdrop-blur-xl h-full flex flex-col justify-between"
+            >
               <div>
-                <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
+                <div className="flex items-center justify-between text-xs text-white/60 font-mono">
                   <span>Edge Latency</span>
-                  <span className="text-violet-300 font-mono">p95</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-violet-500/15 text-violet-300 border border-violet-500/30">
+                    p95 Edge
+                  </span>
                 </div>
-                <div className="text-2xl font-extrabold text-cyan-300 font-mono mt-2">
+                <div className="text-3xl font-extrabold text-white font-mono mt-3 tracking-tight">
                   184ms
                 </div>
-                <p className="text-xs text-neutral-300 mt-1">
+                <p className="text-xs text-white/70 mt-1.5 leading-relaxed">
                   Multi-region global edge inference speed
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-white/[0.08] text-[11px] font-mono text-neutral-400 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-violet-400" />
+              <div className="mt-5 pt-3.5 border-t border-white/[0.08] text-[11px] font-mono text-white/60 flex items-center gap-1.5">
+                <Activity className="w-3.5 h-3.5 text-violet-400" />
                 <span>US-East & EU-Central active</span>
               </div>
             </div>
@@ -336,32 +347,41 @@ export default function DashboardPage() {
 
           {/* Card 4: Plan Status */}
           <TiltCard glowColor="magenta" maxTilt={6}>
-            <div className="p-5 rounded-2xl bg-[#0a091e]/80 border border-white/12 backdrop-blur-2xl h-full flex flex-col justify-between shadow-xl">
+            <div 
+              style={{
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.14)",
+              }}
+              className="p-6 rounded-2xl bg-[#09090b]/80 border border-white/10 backdrop-blur-xl h-full flex flex-col justify-between"
+            >
               <div>
-                <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
-                  <span>Membership Plan</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-white font-bold uppercase">
+                <div className="flex items-center justify-between text-xs text-white/60 font-mono">
+                  <span>Membership</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
+                    currentPlan === "pro"
+                      ? "bg-violet-500/20 text-violet-300 border border-violet-500/40"
+                      : "bg-white/10 text-white/70 border border-white/15"
+                  }`}>
                     {currentPlan}
                   </span>
                 </div>
-                <div className="text-2xl font-extrabold text-white tracking-tight mt-2">
+                <div className="text-2xl font-extrabold text-white tracking-tight mt-3">
                   {currentPlan === "pro" ? "Pro Creator" : "Free Community"}
                 </div>
-                <p className="text-xs text-neutral-300 mt-1">
-                  {currentPlan === "pro" ? "Unlimited transformations & priority SLA" : "Standard edge inference"}
+                <p className="text-xs text-white/70 mt-1.5 leading-relaxed">
+                  {currentPlan === "pro" ? "Unlimited transformations & priority SLA" : "5,000 words per month allowance"}
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-white/[0.08]">
+              <div className="mt-5 pt-3.5 border-t border-white/[0.08]">
                 {currentPlan === "free" ? (
                   <Link
                     href="/settings/billing"
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500 hover:underline"
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-400 hover:text-cyan-300 tracking-tight"
                   >
                     <span>Upgrade to Pro with Razorpay</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-pink-400" />
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 ) : (
-                  <Link href="/settings/billing" className="text-[11px] text-neutral-400 hover:text-white font-mono">
+                  <Link href="/settings/billing" className="text-[11px] text-white/60 hover:text-white font-mono">
                     Manage Subscription →
                   </Link>
                 )}
@@ -372,9 +392,9 @@ export default function DashboardPage() {
 
         {/* 5 Core Engine Quick-Launch Strip */}
         <div className="mb-10">
-          <div className="text-xs font-mono uppercase tracking-wider text-cyan-400 font-semibold mb-3 flex items-center gap-2">
-            <Cpu className="w-3.5 h-3.5" />
-            <span>Quick-Launch Engine Studio</span>
+          <div className="text-xs font-mono uppercase tracking-wider text-white/60 font-semibold mb-3.5 flex items-center gap-2">
+            <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Launch Engine in Studio</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
@@ -387,16 +407,16 @@ export default function DashboardPage() {
                   window.dispatchEvent(event);
                   router.push("/#workspace");
                 }}
-                className="group p-3.5 rounded-2xl bg-[#09081e]/75 hover:bg-[#12102e]/90 border border-white/10 hover:border-white/25 transition-all text-left backdrop-blur-xl shadow-md flex items-center gap-3"
+                className="group p-4 rounded-2xl bg-[#09090b]/80 hover:bg-[#121217]/90 border border-white/10 hover:border-white/20 transition-all text-left backdrop-blur-xl shadow-lg flex items-center gap-3.5"
               >
-                <div className="p-2 rounded-xl bg-white/[0.04] border border-white/10 group-hover:border-cyan-400/50 transition-colors">
+                <div className="p-2 rounded-xl bg-white/[0.04] border border-white/10 group-hover:border-cyan-400/40 transition-colors">
                   {getToolIcon(tool.id)}
                 </div>
                 <div className="overflow-hidden">
-                  <div className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors truncate">
+                  <div className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors truncate tracking-tight">
                     {tool.name}
                   </div>
-                  <div className="text-[10px] text-neutral-400 font-mono truncate">
+                  <div className="text-[10px] text-white/40 font-mono truncate">
                     {tool.badge}
                   </div>
                 </div>
@@ -408,35 +428,35 @@ export default function DashboardPage() {
         {/* Transformation History Vault Section */}
         <div 
           style={{
-            boxShadow: "0 30px 80px -25px rgba(0, 0, 0, 0.95), inset 0 1px 0 0 rgba(255, 255, 255, 0.18)",
+            boxShadow: "0 30px 70px -20px rgba(0, 0, 0, 0.9), inset 0 1px 0 0 rgba(255, 255, 255, 0.14)",
           }}
-          className="rounded-3xl border border-white/15 bg-[#08081a]/90 backdrop-blur-2xl p-6 sm:p-8"
+          className="rounded-3xl border border-white/10 bg-[#09090b]/80 backdrop-blur-2xl p-6 sm:p-8"
         >
           {/* Header & Filter Controls */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/[0.08]">
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
                   Transformation Vault
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-white/10 text-cyan-300 border border-white/10">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-white/[0.06] text-white/80 border border-white/10">
                   {filteredHistory.length} saved
                 </span>
               </div>
-              <p className="text-xs text-neutral-400 mt-1">
-                Filter by tool, search prompts, or copy historical generations with one click.
+              <p className="text-xs text-white/50 mt-1">
+                Filter by tool, search prompts, or copy historical outputs with one click.
               </p>
             </div>
 
             {/* Filter Tabs & Search Bar */}
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5">
               {/* Tab: All vs Starred */}
-              <div className="inline-flex items-center p-1 rounded-xl bg-[#04040e] border border-white/10">
+              <div className="inline-flex items-center p-1 rounded-xl bg-white/[0.03] border border-white/10">
                 <button
                   type="button"
                   onClick={() => setViewFilter("all")}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                    viewFilter === "all" ? "bg-white/15 text-white shadow-sm" : "text-neutral-400 hover:text-white"
+                    viewFilter === "all" ? "bg-white/15 text-white shadow-sm" : "text-white/60 hover:text-white"
                   }`}
                 >
                   All ({history.length})
@@ -445,7 +465,7 @@ export default function DashboardPage() {
                   type="button"
                   onClick={() => setViewFilter("starred")}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                    viewFilter === "starred" ? "bg-white/15 text-white shadow-sm" : "text-neutral-400 hover:text-white"
+                    viewFilter === "starred" ? "bg-white/15 text-white shadow-sm" : "text-white/60 hover:text-white"
                   }`}
                 >
                   <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
@@ -457,11 +477,11 @@ export default function DashboardPage() {
               <select
                 value={selectedToolFilter}
                 onChange={(e) => setSelectedToolFilter(e.target.value)}
-                className="bg-[#04040e] border border-white/10 text-neutral-300 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-cyan-400 cursor-pointer"
+                className="bg-white/[0.03] border border-white/10 text-white/80 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-cyan-400 cursor-pointer"
               >
-                <option value="all">All Engines</option>
+                <option value="all" className="bg-[#09090b] text-white">All Engines</option>
                 {TOOLS.map((t) => (
-                  <option key={t.id} value={t.id}>
+                  <option key={t.id} value={t.id} className="bg-[#09090b] text-white">
                     {t.name}
                   </option>
                 ))}
@@ -469,13 +489,13 @@ export default function DashboardPage() {
 
               {/* Search Box */}
               <div className="relative">
-                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search outputs..."
-                  className="pl-8 pr-3 py-1.5 rounded-xl bg-[#04040e] border border-white/10 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-cyan-400 w-44 sm:w-56"
+                  className="pl-8 pr-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white placeholder-white/40 focus:outline-none focus:border-cyan-400 w-44 sm:w-56"
                 />
               </div>
             </div>
@@ -485,7 +505,6 @@ export default function DashboardPage() {
           {filteredHistory.length > 0 ? (
             <div className="space-y-4">
               {filteredHistory.map((item) => {
-                const glow = getToolGlow(item.toolId);
                 const isCopied = copiedId === item.id;
 
                 return (
@@ -496,19 +515,19 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 450, damping: 25 }}
-                    className="p-5 rounded-2xl bg-[#0a0920]/80 border border-white/10 hover:border-white/25 transition-all shadow-md backdrop-blur-xl group"
+                    className="p-5 rounded-2xl bg-[#0c0c0e]/70 border border-white/[0.08] hover:border-white/20 transition-all shadow-md backdrop-blur-xl group"
                   >
                     {/* Item Top Metadata */}
                     <div className="flex flex-wrap items-center justify-between gap-3 mb-3.5 pb-3 border-b border-white/[0.06]">
                       <div className="flex items-center gap-2.5">
-                        <div className="p-1.5 rounded-lg bg-white/[0.05] border border-white/10">
+                        <div className="p-1.5 rounded-lg bg-white/[0.04] border border-white/10">
                           {getToolIcon(item.toolId)}
                         </div>
-                        <span className="text-xs font-bold text-white">
+                        <span className="text-xs font-bold text-white tracking-tight">
                           {item.toolName}
                         </span>
-                        <span className="text-neutral-600 font-mono">•</span>
-                        <span className="text-[11px] text-neutral-400 font-mono">
+                        <span className="text-white/20 font-mono">•</span>
+                        <span className="text-[11px] text-white/50 font-mono">
                           {new Date(item.createdAt).toLocaleDateString(undefined, {
                             month: "short",
                             day: "numeric",
@@ -525,7 +544,7 @@ export default function DashboardPage() {
                             {item.humanScore}% Human
                           </span>
                         )}
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/25">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-white/[0.05] text-white/70 border border-white/10">
                           {item.wordsIn}w → {item.wordsOut}w ({item.wordDeltaPct > 0 ? `+${item.wordDeltaPct}%` : `${item.wordDeltaPct}%`})
                         </span>
 
@@ -540,7 +559,7 @@ export default function DashboardPage() {
                             className={`w-4 h-4 transition-colors ${
                               item.isStarred
                                 ? "fill-amber-400 text-amber-400"
-                                : "text-neutral-500 hover:text-neutral-300"
+                                : "text-white/30 hover:text-white/60"
                             }`}
                           />
                         </button>
@@ -550,7 +569,7 @@ export default function DashboardPage() {
                           type="button"
                           onClick={() => handleDelete(item.id)}
                           title="Delete generation"
-                          className="p-1.5 rounded-lg text-neutral-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                          className="p-1.5 rounded-lg text-white/30 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -560,18 +579,18 @@ export default function DashboardPage() {
                     {/* Dual Snippet Display */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs sm:text-sm">
                       {/* Input Snippet */}
-                      <div className="p-3.5 rounded-xl bg-black/40 border border-white/5 font-sans text-neutral-400 leading-relaxed">
-                        <div className="text-[10px] font-mono uppercase text-neutral-500 mb-1 font-bold">
+                      <div className="p-4 rounded-xl bg-black/40 border border-white/[0.06] font-sans text-white/60 leading-relaxed">
+                        <div className="text-[10px] font-mono uppercase text-white/40 mb-1.5 font-bold">
                           Input Prompt
                         </div>
                         <p className="line-clamp-3">{item.fullInput}</p>
                       </div>
 
                       {/* Output Snippet */}
-                      <div className="p-3.5 rounded-xl bg-[#04040f]/90 border border-cyan-500/20 font-sans text-neutral-100 leading-relaxed shadow-inner">
-                        <div className="text-[10px] font-mono uppercase text-cyan-400 mb-1 font-bold flex items-center justify-between">
+                      <div className="p-4 rounded-xl bg-[#04040d]/80 border border-cyan-500/20 font-sans text-white/90 leading-relaxed shadow-inner">
+                        <div className="text-[10px] font-mono uppercase text-cyan-400 mb-1.5 font-bold flex items-center justify-between">
                           <span>Synthesized Result</span>
-                          <span className="text-[10px] text-neutral-500 font-mono">{item.latencyMs}ms</span>
+                          <span className="text-[10px] text-white/40 font-mono">{item.latencyMs}ms</span>
                         </div>
                         <p className="line-clamp-4 whitespace-pre-wrap">{item.fullOutput}</p>
                       </div>
@@ -582,7 +601,7 @@ export default function DashboardPage() {
                       <button
                         type="button"
                         onClick={() => handleDownload(item)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-xs text-neutral-300 hover:text-white transition-all border border-white/5"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-xs text-white/70 hover:text-white transition-all border border-white/5"
                       >
                         <Download className="w-3.5 h-3.5" />
                         <span>Export .txt</span>
@@ -620,8 +639,8 @@ export default function DashboardPage() {
               <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center mx-auto mb-3 text-cyan-400">
                 <Sparkles className="w-6 h-6 opacity-40" />
               </div>
-              <h3 className="text-base font-bold text-white">No transformations found</h3>
-              <p className="text-xs text-neutral-400 mt-1 max-w-sm mx-auto">
+              <h3 className="text-base font-bold text-white tracking-tight">No transformations found</h3>
+              <p className="text-xs text-white/50 mt-1 max-w-sm mx-auto">
                 {searchQuery
                   ? "No saved outputs match your current query. Try adjusting your search term."
                   : "Launch any tool in the studio to generate and automatically save results to your vault."}
