@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import {
   supabase,
   isSupabaseConfigured,
@@ -8,6 +8,8 @@ import {
   DEFAULT_DEMO_PROFILE,
   getUserProfile,
   updateUserProfile,
+  fetchUserProfile,
+  incrementWordsUsed,
 } from "./supabase";
 
 interface AuthContextType {
@@ -21,6 +23,8 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   enterDemoMode: () => void;
   upgradeToPro: () => void;
+  consumeWords: (words: number) => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -34,6 +38,8 @@ const AuthContext = createContext<AuthContextType>({
   signOut: async () => {},
   enterDemoMode: () => {},
   upgradeToPro: () => {},
+  consumeWords: async () => {},
+  refreshProfile: async () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -41,46 +47,84 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(false);
 
+  // Sync or initialize profile from Supabase
+  const syncSupabaseProfile = useCallback(async (sessionUser: { id: string; email?: string; user_metadata?: Record<string, any>; created_at: string }) => {
+    try {
+      const dbProfile = await fetchUserProfile(sessionUser.id);
+      if (dbProfile) {
+        setUser(dbProfile);
+        return;
+      }
+
+      // Upsert profile if not yet created
+      const newProfileData = {
+        id: sessionUser.id,
+        email: sessionUser.email || "",
+        full_name: sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.name || "Creator",
+        avatar_url: sessionUser.user_metadata?.avatar_url || "",
+        plan: "free",
+        words_used: 0,
+        word_limit: 5000,
+      };
+
+      await supabase.from("profiles").upsert(newProfileData);
+
+      setUser({
+        id: sessionUser.id,
+        email: newProfileData.email,
+        fullName: newProfileData.full_name,
+        avatarUrl: newProfileData.avatar_url,
+        plan: "free",
+        wordsUsedThisMonth: 0,
+        wordLimit: 5000,
+        createdAt: sessionUser.created_at,
+      });
+    } catch (err) {
+      console.warn("Could not sync profile with Supabase, using fallback:", err);
+      const saved = getUserProfile();
+      setUser({
+        ...saved,
+        id: sessionUser.id,
+        email: sessionUser.email || saved.email,
+      });
+    }
+  }, []);
+
+  const refreshProfile = useCallback(async () => {
+    if (user?.id && isSupabaseConfigured) {
+      const refreshed = await fetchUserProfile(user.id);
+      if (refreshed) {
+        setUser(refreshed);
+      }
+    } else {
+      setUser(getUserProfile());
+    }
+  }, [user?.id]);
+
   useEffect(() => {
-    // Check local storage for existing session or demo state
     const savedProfile = getUserProfile();
     const isSavedDemo = typeof window !== "undefined" && localStorage.getItem("texttools_is_demo") === "true";
 
     if (isSupabaseConfigured) {
-      // Check real Supabase session
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.user) {
-          setUser({
-            id: session.user.id,
-            email: session.user.email || "",
-            fullName: session.user.user_metadata?.full_name || savedProfile.fullName,
-            avatarUrl: session.user.user_metadata?.avatar_url,
-            plan: savedProfile.plan || "free",
-            wordsUsedThisMonth: savedProfile.wordsUsedThisMonth || 0,
-            wordLimit: savedProfile.plan === "pro" ? 999999 : 5000,
-            createdAt: session.user.created_at,
+          syncSupabaseProfile(session.user).finally(() => {
+            setIsDemoMode(false);
+            setIsLoading(false);
           });
-          setIsDemoMode(false);
         } else if (isSavedDemo) {
           setUser(savedProfile);
           setIsDemoMode(true);
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
         }
-        setIsLoading(false);
       });
 
       const { data: authListener } = supabase.auth.onAuthStateChange(
         async (event, session) => {
           if (session?.user) {
-            setUser({
-              id: session.user.id,
-              email: session.user.email || "",
-              fullName: session.user.user_metadata?.full_name || "Creator",
-              avatarUrl: session.user.user_metadata?.avatar_url,
-              plan: "free",
-              wordsUsedThisMonth: 120,
-              wordLimit: 5000,
-              createdAt: session.user.created_at,
-            });
+            await syncSupabaseProfile(session.user);
             setIsDemoMode(false);
           } else if (!isSavedDemo) {
             setUser(null);
@@ -92,18 +136,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         authListener.subscription.unsubscribe();
       };
     } else {
-      // Default to demo mode if saved, otherwise ready for login
       if (isSavedDemo) {
         setUser(savedProfile);
         setIsDemoMode(true);
       }
       setIsLoading(false);
     }
-  }, []);
+  }, [syncSupabaseProfile]);
 
   const signInWithGoogle = async () => {
     if (!isSupabaseConfigured) {
-      // Fallback to demo mode for preview environment
       enterDemoMode();
       return { error: null };
     }
@@ -174,6 +216,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       wordLimit: 999999,
     });
     setUser(updated);
+
+    // If connected to Supabase, update profile plan
+    if (user?.id && isSupabaseConfigured) {
+      supabase
+        .from("profiles")
+        .update({ plan: "pro", word_limit: 999999 })
+        .eq("id", user.id)
+        .then(() => {});
+    }
+  };
+
+  const consumeWords = async (words: number) => {
+    if (!words || words <= 0) return;
+
+    if (user?.id && isSupabaseConfigured) {
+      const newTotal = await incrementWordsUsed(user.id, words);
+      setUser((prev) => (prev ? { ...prev, wordsUsedThisMonth: newTotal } : null));
+    } else {
+      const current = getUserProfile();
+      const updatedWords = (current.wordsUsedThisMonth || 0) + words;
+      updateUserProfile({ wordsUsedThisMonth: updatedWords });
+      setUser((prev) => (prev ? { ...prev, wordsUsedThisMonth: updatedWords } : null));
+    }
   };
 
   return (
@@ -189,6 +254,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signOut,
         enterDemoMode,
         upgradeToPro,
+        consumeWords,
+        refreshProfile,
       }}
     >
       {children}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -24,14 +24,17 @@ import {
   ArrowUpRight,
   Clock,
   Layers,
-  Activity
+  Activity,
+  RefreshCw
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useAuth } from "@/lib/auth-context";
 import { 
-  getSavedHistory, 
-  deleteHistoryItem, 
-  toggleFavoriteHistoryItem, 
+  supabase,
+  isSupabaseConfigured,
+  fetchGenerations, 
+  deleteGenerationRecord, 
+  toggleFavoriteGeneration, 
   GenerationHistoryItem 
 } from "@/lib/supabase";
 import { TOOLS } from "@/data/tools";
@@ -40,18 +43,67 @@ import TiltCard from "@/components/TiltCard";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, signOut } = useAuth();
+  const { user, signOut, refreshProfile } = useAuth();
 
   const [history, setHistory] = useState<GenerationHistoryItem[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedToolFilter, setSelectedToolFilter] = useState("all");
   const [viewFilter, setViewFilter] = useState<"all" | "starred">("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Sync history on mount
+  // Live generation loader from Supabase PostgreSQL
+  const loadGenerations = useCallback(async () => {
+    setIsLoadingHistory(true);
+    try {
+      const records = await fetchGenerations(user?.id);
+      setHistory(records);
+    } catch (err) {
+      console.error("Failed to load generations from Supabase:", err);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  }, [user?.id]);
+
+  // Sync generations and listen to realtime updates
   useEffect(() => {
-    setHistory(getSavedHistory());
-  }, []);
+    loadGenerations();
+
+    // Listen to local workspace events within the same app session
+    const handleLocalGen = () => {
+      loadGenerations();
+      refreshProfile();
+    };
+    window.addEventListener("generation-created", handleLocalGen);
+
+    // Set up Supabase Realtime subscription on generations table
+    let channel: any = null;
+    if (isSupabaseConfigured && user?.id) {
+      channel = supabase
+        .channel(`dashboard-generations-${user.id}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "generations",
+            filter: `user_id=eq.${user.id}`,
+          },
+          () => {
+            loadGenerations();
+            refreshProfile();
+          }
+        )
+        .subscribe();
+    }
+
+    return () => {
+      window.removeEventListener("generation-created", handleLocalGen);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
+    };
+  }, [loadGenerations, refreshProfile, user?.id]);
 
   // Filter history based on search, tool, and starred status
   const filteredHistory = useMemo(() => {
@@ -100,14 +152,18 @@ export default function DashboardPage() {
     }
   };
 
-  const handleDelete = (id: string) => {
-    deleteHistoryItem(id);
-    setHistory(getSavedHistory());
+  const handleDelete = async (id: string) => {
+    setHistory((prev) => prev.filter((item) => item.id !== id));
+    await deleteGenerationRecord(id, user?.id);
   };
 
-  const handleToggleStar = (id: string) => {
-    toggleFavoriteHistoryItem(id);
-    setHistory(getSavedHistory());
+  const handleToggleStar = async (id: string, currentStarred?: boolean) => {
+    setHistory((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, isStarred: !item.isStarred } : item
+      )
+    );
+    await toggleFavoriteGeneration(id, Boolean(currentStarred), user?.id);
   };
 
   const handleDownload = (item: GenerationHistoryItem) => {
@@ -442,6 +498,20 @@ export default function DashboardPage() {
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-white/[0.06] text-white/80 border border-white/10">
                   {filteredHistory.length} saved
                 </span>
+                <button
+                  type="button"
+                  onClick={loadGenerations}
+                  title="Refresh generations from Supabase"
+                  className="p-1 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isLoadingHistory ? "animate-spin text-cyan-400" : ""}`} />
+                </button>
+                {isSupabaseConfigured && (
+                  <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-[#00f5a0] border border-emerald-500/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#00f5a0] animate-pulse" />
+                    Live Supabase Sync
+                  </span>
+                )}
               </div>
               <p className="text-xs text-white/50 mt-1">
                 Filter by tool, search prompts, or copy historical outputs with one click.
@@ -551,7 +621,7 @@ export default function DashboardPage() {
                         {/* Star Button */}
                         <button
                           type="button"
-                          onClick={() => handleToggleStar(item.id)}
+                          onClick={() => handleToggleStar(item.id, item.isStarred)}
                           title={item.isStarred ? "Remove Star" : "Star output"}
                           className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
                         >

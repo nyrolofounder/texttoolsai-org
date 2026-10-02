@@ -156,7 +156,262 @@ export const DEFAULT_DEMO_HISTORY: GenerationHistoryItem[] = [
   },
 ];
 
-// Helper functions for reading & writing history
+// Helper to map DB row to GenerationHistoryItem
+export interface SupabaseGenerationRow {
+  id: string;
+  user_id: string;
+  tool_id: string;
+  tool_name: string;
+  input_prompt: string;
+  synthesized_result: string;
+  metrics: {
+    wordsIn?: number;
+    wordsOut?: number;
+    wordDeltaPct?: number;
+    humanScore?: number;
+    latencyMs?: number;
+  };
+  starred: boolean;
+  created_at: string;
+}
+
+export function mapGenerationRowToItem(row: SupabaseGenerationRow): GenerationHistoryItem {
+  const wordsIn = row.metrics?.wordsIn ?? (row.input_prompt ? row.input_prompt.trim().split(/\s+/).length : 0);
+  const wordsOut = row.metrics?.wordsOut ?? (row.synthesized_result ? row.synthesized_result.trim().split(/\s+/).length : 0);
+  
+  return {
+    id: row.id,
+    toolId: row.tool_id,
+    toolName: row.tool_name,
+    inputSnippet: row.input_prompt.slice(0, 120),
+    outputSnippet: row.synthesized_result.slice(0, 120),
+    fullInput: row.input_prompt,
+    fullOutput: row.synthesized_result,
+    wordsIn,
+    wordsOut,
+    wordDeltaPct: row.metrics?.wordDeltaPct ?? Math.round(((wordsOut - wordsIn) / (wordsIn || 1)) * 100),
+    humanScore: row.metrics?.humanScore ?? 99.4,
+    latencyMs: row.metrics?.latencyMs ?? 180,
+    isStarred: Boolean(row.starred),
+    createdAt: row.created_at,
+  };
+}
+
+// ------------------------------------------------------------------------------
+// ASYNC SUPABASE DATA ACCESS WITH RESILIENT FALLBACKS
+// ------------------------------------------------------------------------------
+
+/**
+ * Fetch all generations for the active user from Supabase.
+ * Gracefully falls back to local storage if offline or in demo mode.
+ */
+export async function fetchGenerations(userId?: string): Promise<GenerationHistoryItem[]> {
+  if (isSupabaseConfigured && userId) {
+    try {
+      const { data, error } = await supabase
+        .from("generations")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        return (data as SupabaseGenerationRow[]).map(mapGenerationRowToItem);
+      }
+    } catch (err) {
+      console.warn("Supabase fetchGenerations failed, falling back to local vault:", err);
+    }
+  }
+
+  return getSavedHistory();
+}
+
+/**
+ * Save a new generation record to Supabase PostgreSQL and cache locally.
+ */
+export async function saveGenerationRecord(
+  item: Omit<GenerationHistoryItem, "id" | "createdAt">,
+  userId?: string
+): Promise<GenerationHistoryItem> {
+  let createdItem: GenerationHistoryItem | null = null;
+
+  if (isSupabaseConfigured && userId) {
+    try {
+      const { data, error } = await supabase
+        .from("generations")
+        .insert({
+          user_id: userId,
+          tool_id: item.toolId,
+          tool_name: item.toolName,
+          input_prompt: item.fullInput,
+          synthesized_result: item.fullOutput,
+          metrics: {
+            wordsIn: item.wordsIn,
+            wordsOut: item.wordsOut,
+            wordDeltaPct: item.wordDeltaPct,
+            humanScore: item.humanScore,
+            latencyMs: item.latencyMs,
+          },
+          starred: Boolean(item.isStarred),
+        })
+        .select()
+        .single();
+
+      if (!error && data) {
+        createdItem = mapGenerationRowToItem(data as SupabaseGenerationRow);
+      }
+    } catch (err) {
+      console.warn("Supabase saveGenerationRecord failed, falling back to local vault:", err);
+    }
+  }
+
+  // Fallback or local mirror
+  const savedItem = createdItem || saveHistoryItem(item);
+
+  // Cache locally
+  if (typeof window !== "undefined") {
+    try {
+      const current = getSavedHistory();
+      const exists = current.some((c) => c.id === savedItem.id);
+      if (!exists) {
+        const updated = [savedItem, ...current].slice(0, 50);
+        localStorage.setItem(LOCAL_STORAGE_KEY_HISTORY, JSON.stringify(updated));
+      }
+    } catch (err) {
+      console.error("Local storage sync error:", err);
+    }
+  }
+
+  return savedItem;
+}
+
+/**
+ * Delete a generation record from Supabase and local cache.
+ */
+export async function deleteGenerationRecord(id: string, userId?: string): Promise<void> {
+  if (isSupabaseConfigured && userId) {
+    try {
+      await supabase
+        .from("generations")
+        .delete()
+        .eq("id", id)
+        .eq("user_id", userId);
+    } catch (err) {
+      console.warn("Supabase delete failed:", err);
+    }
+  }
+
+  deleteHistoryItem(id);
+}
+
+/**
+ * Toggle favorite status in Supabase and local cache.
+ */
+export async function toggleFavoriteGeneration(
+  id: string,
+  currentStarred: boolean,
+  userId?: string
+): Promise<boolean> {
+  const nextStarred = !currentStarred;
+
+  if (isSupabaseConfigured && userId) {
+    try {
+      await supabase
+        .from("generations")
+        .update({ starred: nextStarred })
+        .eq("id", id)
+        .eq("user_id", userId);
+    } catch (err) {
+      console.warn("Supabase toggle favorite failed:", err);
+    }
+  }
+
+  toggleFavoriteHistoryItem(id);
+  return nextStarred;
+}
+
+/**
+ * Fetch user profile from Supabase profiles table.
+ */
+export async function fetchUserProfile(userId: string): Promise<UserProfile | null> {
+  if (!isSupabaseConfigured) return getUserProfile();
+
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
+
+    if (!error && data) {
+      return {
+        id: data.id,
+        email: data.email,
+        fullName: data.full_name || "Creator",
+        avatarUrl: data.avatar_url || "",
+        plan: data.plan || "free",
+        wordsUsedThisMonth: data.words_used || 0,
+        wordLimit: data.word_limit || (data.plan === "pro" ? 999999 : 5000),
+        createdAt: data.created_at,
+      };
+    }
+  } catch (err) {
+    console.warn("Supabase fetchUserProfile error:", err);
+  }
+
+  return null;
+}
+
+/**
+ * Atomic live words quota update via Supabase RPC or direct increment.
+ */
+export async function incrementWordsUsed(userId: string, wordsToAdd: number): Promise<number> {
+  if (isSupabaseConfigured && userId) {
+    try {
+      // 1. Try atomic RPC function
+      const { data, error } = await supabase.rpc("increment_words_used", {
+        user_uuid: userId,
+        words_to_add: wordsToAdd,
+      });
+
+      if (!error && typeof data === "number") {
+        updateUserProfile({ wordsUsedThisMonth: data });
+        return data;
+      }
+
+      // 2. Direct table update fallback
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("words_used")
+        .eq("id", userId)
+        .single();
+
+      const newWords = (profile?.words_used || 0) + wordsToAdd;
+      await supabase
+        .from("profiles")
+        .update({
+          words_used: newWords,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", userId);
+
+      updateUserProfile({ wordsUsedThisMonth: newWords });
+      return newWords;
+    } catch (err) {
+      console.warn("Failed to increment words in Supabase, using local fallback:", err);
+    }
+  }
+
+  // Local storage increment
+  const prof = getUserProfile();
+  const updatedWords = (prof.wordsUsedThisMonth || 0) + wordsToAdd;
+  updateUserProfile({ wordsUsedThisMonth: updatedWords });
+  return updatedWords;
+}
+
+// ------------------------------------------------------------------------------
+// LOCAL STORAGE RESILIENT FALLBACKS
+// ------------------------------------------------------------------------------
+
 export function getSavedHistory(): GenerationHistoryItem[] {
   if (typeof window === "undefined") return DEFAULT_DEMO_HISTORY;
   try {

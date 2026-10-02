@@ -16,12 +16,14 @@ import {
   Layers, 
   Zap, 
   ShieldCheck, 
-  Cpu
+  Cpu,
+  AlertTriangle
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { TOOLS, ToolConfig } from "@/data/tools";
 import { transformText, TransformResult } from "@/lib/transformer";
-import { saveHistoryItem } from "@/lib/supabase";
+import { saveGenerationRecord } from "@/lib/supabase";
+import { useAuth } from "@/lib/auth-context";
 import TiltCard from "./TiltCard";
 
 interface WorkspaceProps {
@@ -30,6 +32,7 @@ interface WorkspaceProps {
 }
 
 export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps) {
+  const { user, consumeWords } = useAuth();
   const currentTool: ToolConfig =
     TOOLS.find((t) => t.id === activeToolId) || TOOLS[0];
 
@@ -37,6 +40,7 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
   const [outputVal, setOutputVal] = useState(currentTool.defaultOutput);
   const [isProcessing, setIsProcessing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [quotaExceeded, setQuotaExceeded] = useState(false);
   const [viewMode, setViewMode] = useState<"clean" | "diff">("clean");
   const [activeOptions, setActiveOptions] = useState<Record<string, string>>({});
   const [currentMetrics, setCurrentMetrics] = useState<TransformResult["stats"]>({
@@ -89,8 +93,15 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
   }, [onToolChange]);
 
   // Handle transformation execution
-  const handleTransform = () => {
+  const handleTransform = async () => {
     if (!inputVal.trim()) return;
+
+    // Check monthly word quota limit on free tier
+    if (user && user.plan === "free" && user.wordsUsedThisMonth >= user.wordLimit) {
+      setQuotaExceeded(true);
+      return;
+    }
+    setQuotaExceeded(false);
 
     setIsProcessing(true);
     setOutputVal("");
@@ -104,16 +115,16 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
       let currentIndex = 0;
       const step = Math.max(2, Math.floor(fullText.length / 32));
       
-      const streamTimer = setInterval(() => {
+      const streamTimer = setInterval(async () => {
         currentIndex += step;
         if (currentIndex >= fullText.length) {
           setOutputVal(fullText);
           setIsProcessing(false);
           clearInterval(streamTimer);
 
-          // Persist generation to history vault
+          // Persist generation to Supabase PostgreSQL & local vault
           try {
-            saveHistoryItem({
+            await saveGenerationRecord({
               toolId: currentTool.id,
               toolName: currentTool.name,
               inputSnippet: inputVal.slice(0, 120),
@@ -125,9 +136,17 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
               wordDeltaPct: result.stats.wordDeltaPct,
               humanScore: result.stats.humanScore,
               latencyMs: result.latencyMs,
-            });
+            }, user?.id);
+
+            // Live word quota tracking in profiles
+            await consumeWords(result.stats.wordsIn);
+
+            // Notify dashboard and any listening components
+            if (typeof window !== "undefined") {
+              window.dispatchEvent(new CustomEvent("generation-created"));
+            }
           } catch (err) {
-            console.error("Could not persist generation", err);
+            console.error("Could not persist generation or update quota", err);
           }
         } else {
           setOutputVal(fullText.slice(0, currentIndex));
@@ -258,16 +277,50 @@ export default function Workspace({ activeToolId, onToolChange }: WorkspaceProps
             </p>
           </div>
 
-          <div className="mt-4 md:mt-0 flex items-center gap-3">
-            <span className="text-xs text-neutral-400 hidden sm:inline font-mono">Engine Status:</span>
+          <div className="mt-4 md:mt-0 flex flex-wrap items-center gap-2.5">
+            {/* Live Word Quota Meter Badge */}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs font-mono text-white/80 backdrop-blur-xl shadow-sm">
+              <Zap className="w-3.5 h-3.5 text-amber-400" />
+              <span className="text-white/50">Quota:</span>
+              <span className="text-white font-bold">
+                {(user?.wordsUsedThisMonth ?? 0).toLocaleString()}
+              </span>
+              <span className="text-white/30">/</span>
+              <span className="text-white/60">
+                {user?.plan === "pro" ? "Unlimited" : (user?.wordLimit || 5000).toLocaleString()}
+              </span>
+            </div>
+
             <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#09081a]/90 border border-white/15 text-xs font-mono text-neutral-200 shadow-inner backdrop-blur-xl">
               <span className="w-2 h-2 rounded-full bg-[#00f5a0] shadow-[0_0_8px_#00f5a0]" />
-              <span>Tuned Weights Active</span>
+              <span className="hidden sm:inline">Weights Active</span>
               <span className="text-neutral-600">|</span>
               <span className="text-cyan-300 font-bold">{latency}ms</span>
             </div>
           </div>
         </div>
+
+        {/* Quota Exceeded Notification Banner */}
+        {quotaExceeded && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 backdrop-blur-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-amber-200 shadow-lg"
+          >
+            <div className="flex items-center gap-2.5">
+              <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
+              <span>
+                Monthly word quota reached ({(user?.wordsUsedThisMonth ?? 5000).toLocaleString()} / {(user?.wordLimit || 5000).toLocaleString()} words used). Upgrade to Pro Creator for unlimited words & priority edge nodes.
+              </span>
+            </div>
+            <a
+              href="#pricing"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500 text-white font-bold shrink-0 shadow-[0_0_15px_rgba(0,242,254,0.3)] hover:shadow-[0_0_25px_rgba(0,242,254,0.5)] transition-all"
+            >
+              Upgrade to Pro
+            </a>
+          </motion.div>
+        )}
 
         {/* 3D Chamfered Studio Workspace Cockpit Container */}
         <div 
